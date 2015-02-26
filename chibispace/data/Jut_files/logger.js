@@ -1,0 +1,1 @@
+define(['lib/logger/index'], function(pkg) { return pkg; });    

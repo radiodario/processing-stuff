@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:d86794ff73320f3f8a825c7ca243bcc1:1/1$ -->
+<!--Format:
+n  => name of the sprite
+x  => sprite x pos in texture
+y  => sprite y pos in texture
+w  => sprite width (may be trimmed)
+h  => sprite height (may be trimmed)
+oX => sprite's x-corner offset (only available if trimmed)
+oY => sprite's y-corner offset (only available if trimmed)
+oW => sprite's original width (only available if trimmed)
+oH => sprite's original height (only available if trimmed)
+r => 'y' only set if sprite is rotated
+-->
+<TextureAtlas imagePath="chibi-sprites.png" width="256" height="256">
+  <action n="ecoco">
+    <sprite n="tibi_ecoco.gif" x="2" y="2" w="70" h="128"/>
+  </action>
+  <action n="gosurori">
+    <sprite n="tibi_gosurori.gif" x="185" y="2" w="59" h="112"/>
+  </action>
+  <action n="idol">
+    <sprite n="tibi_idol.gif" x="74" y="2" w="59" h="124"/>
+  </action>
+  <action n="lucky">
+    <sprite n="tibi_lucky-normal.gif" x="63" y="132" w="59" h="121"/>
+  </action>
+  <action n="maido">
+    <sprite n="tibi_maido.gif" x="124" y="128" w="59" h="123"/>
+  </action>
+  <action n="sukumizu">
+    <sprite n="tibi_sukumizu.gif" x="2" y="132" w="59" h="121"/>
+  </action>
+  <action n="waha">
+    <sprite n="tibi_waha.gif" x="185" y="116" w="59" h="111"/>
+  </action>
+</TextureAtlas>

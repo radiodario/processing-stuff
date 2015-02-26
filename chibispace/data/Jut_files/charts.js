@@ -1,0 +1,1 @@
+define(['applib/charts/index'], function(pkg) { return pkg; });    

@@ -1,0 +1,92 @@
+// Equinox - a sun - earth simulation of truth and beauty.
+import peasy.*;
+
+float easing = 1;
+boolean showorbit = true;
+PeasyCam cam;
+
+PShader lightShader;
+
+Orbiter moon;
+Orbiter earth;
+
+
+// measurements
+// sun radius: 695800 km
+// earth orbit: 149597871 km
+// earth radius: 6371 km
+// moon orbit: 384400 km
+// moon radius: 1736 km
+
+// do everything in sunRadius
+// float scalee = 0.00001f;
+// float sunRadius = 695500.0 * scalee;
+// float earthRadius = 6371.0 * scalee;
+// float earthOrbit = 149597871.0 * scalee;
+// float moonOrbit = 384400.0 * scalee;
+// float moonRadius = 1736.0 * scalee;
+int scalee = 1;
+int sunRadius = 100 * scalee;
+int earthRadius = 20 * scalee;
+int earthOrbit = width/2 * scalee;
+int moonOrbit = 100 * scalee;
+int moonRadius = 10 * scalee;
+
+
+
+void setup() {
+
+  println(scalee + "," + sunRadius + "," + earthRadius + "," + earthOrbit);
+
+  size(1280, 800, P3D);
+  frameRate(60);
+  cam = new PeasyCam(this, 100);
+  cam.setMinimumDistance(earthOrbit);
+  cam.setMaximumDistance(earthOrbit + 5000);
+
+  colorMode(HSB);
+
+  lightShader = loadShader("lightfrag.glsl", "lightvert.glsl");
+
+  moon = new Orbiter(2, moonOrbit, moonRadius, 1, 1);
+  earth = new Orbiter(0.1, earthOrbit, earthRadius, 1, 1.5);
+
+}
+
+
+void draw() {
+
+  background(0);
+
+  drawSun();
+
+  shader(lightShader);
+
+  directionalLight(255,255,255, 0, 0, 0);
+
+
+  earth.orbit(0, 0);
+  moon.orbit(earth);
+
+
+  earth.draw();
+  moon.draw();
+
+}
+
+
+void drawSun() {
+
+  pushStyle();
+  noStroke();
+  fill(40, 255, 255);
+  pushMatrix();
+  rotateX(PI/2);
+  sphereDetail(15);
+  sphere(sunRadius);
+  popMatrix();
+
+  popStyle();
+
+
+}

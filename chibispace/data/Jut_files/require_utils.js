@@ -1,0 +1,1 @@
+define(['lib/require_utils/index'], function(pkg) { return pkg; });    

@@ -1,0 +1,1 @@
+define(['lib/request-wrapper/index'], function(pkg) { return pkg; });    

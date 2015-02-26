@@ -1,0 +1,1 @@
+define(['lib/jut-version/index'], function(pkg) { return pkg; });    

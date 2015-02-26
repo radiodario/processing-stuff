@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:fbf19b6d6ca28d3ab2faa7553edc4420:1/1$ -->
+<!--Format:
+n  => name of the sprite
+x  => sprite x pos in texture
+y  => sprite y pos in texture
+w  => sprite width (may be trimmed)
+h  => sprite height (may be trimmed)
+oX => sprite's x-corner offset (only available if trimmed)
+oY => sprite's y-corner offset (only available if trimmed)
+oW => sprite's original width (only available if trimmed)
+oH => sprite's original height (only available if trimmed)
+r => 'y' only set if sprite is rotated
+-->
+<TextureAtlas imagePath="C.png" width="512" height="1024">
+
+    <action n="start">
+        <sprite n="cell_03.png" x="2" y="2" w="67" h="148"/>
+        <sprite n="cell_04.png" x="71" y="2" w="93" h="148"/>
+        <sprite n="cell_05.png" x="166" y="2" w="88" h="148"/>
+        <sprite n="cell_06.png" x="256" y="2" w="83" h="148"/>
+        <sprite n="cell_07.png" x="341" y="2" w="85" h="148"/>
+        <sprite n="cell_08.png" x="428" y="2" w="77" h="148"/>
+        <sprite n="cell_09.png" x="2" y="152" w="79" h="148"/>
+        <sprite n="cell_10.png" x="83" y="152" w="82" h="148"/>
+    </action>
+
+    <action n="stand">
+        <sprite n="cell_11.png" x="167" y="152" w="86" h="148"/>
+    </action>
+
+    <action n="guard">
+        <sprite n="cell_13.png" x="255" y="152" w="75" h="148"/>
+        <sprite n="cell_14.png" x="332" y="152" w="78" h="148"/>
+        <sprite n="cell_15.png" x="412" y="152" w="70" h="148"/>
+        <sprite n="cell_16.png" x="2" y="302" w="64" h="148"/>
+    </action>
+
+        
+    <action n="stand2">
+        <sprite n="cell_19.png" x="153" y="302" w="61" h="148"/>
+        <sprite n="cell_20.png" x="216" y="302" w="75" h="148"/>
+        <sprite n="cell_21.png" x="293" y="302" w="72" h="148"/>
+        <sprite n="cell_23.png" x="367" y="302" w="68" h="148"/>
+    </action>
+
+    <action n="lowEnergy">
+        <sprite n="cell_25.png" x="2" y="452" w="99" h="148"/>
+        <sprite n="cell_27.png" x="103" y="452" w="99" h="148"/>
+        <sprite n="cell_29.png" x="204" y="452" w="99" h="148"/>
+        <sprite n="cell_31.png" x="305" y="452" w="99" h="148"/>
+    </action>
+</TextureAtlas>
