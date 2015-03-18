@@ -1,29 +1,24 @@
 PShader myShader;
-import themidibus.*;
+import lazer.viz.*;
 
-MidiBus nanoKontrol;
-MidiBus vdmxKontrol;
-Controller kontrol;
-Sifon send;
+LazerController kontrol;
+
+LazerSyphon send;
 
 PImage texture;
 
-int width = 1280;
-int height = 720;
+int width = 1024;
+int height = 768;
 
 void setup() {
   size(800, 600, P3D);
-
-  MidiBus.list();
-  nanoKontrol = new MidiBus(this, "SLIDER/KNOB", "CTRL", "nanoKontrol");
-  vdmxKontrol = new MidiBus(this, "From VDMX", "To VDMX", "vdmxKontrol");
-
-  kontrol = new Controller();
+  kontrol = new LazerController(this);
+  setControls();
 
   myShader = loadShader("sea.glsl");
   myShader.set("resolution", float(width), float(height));
 
-  send = new Sifon(this, width, height, P3D);
+  send = new LazerSyphon(this, width, height, P3D);
 
   updateShader();
 
@@ -45,6 +40,13 @@ void updateShader() {
   myShader.set("SEA_FREQ", seaFreq);
 
   seaColor();
+
+
+  float multX = (float) map(kontrol.get("moveMultX"), 0, 127, 0, 5);
+  float multY = (float) map(kontrol.get("moveMultY"), 0, 127, 0, 5);
+  float multZ = (float) map(kontrol.get("moveMultZ"), 0, 127, 0, 5);
+
+  myShader.set("MOVE_MULTS", multX, multY, multZ);
 
 }
 
@@ -92,18 +94,36 @@ void draw() {
   text("running", 10, 10);
 }
 
-void controllerChange(int channel, int number, int value, long timestamp, String bus_name) {
 
-  // println(timestamp + " - Handled controllerChange " + channel + " " + number + " " + value + " " + bus_name);
+void setControls() {
 
-  if (bus_name == "nanoKontrol") {
-    kontrol.handleMidiEvent(channel, number, value);
-  }
+  // Kontroller controls
 
-  if (bus_name == "vdmxKontrol") {
+  // the height of the sea
+  kontrol.setMapping("seaHeight", kontrol.SLIDER1, 50);
+  // how choppy is the sea
+  kontrol.setMapping("seaChoppy", kontrol.SLIDER2, 100);
+  // how fast is the sea
+  kontrol.setMapping("seaSpeed", kontrol.SLIDER3, 30);
+  // the frequency of the sea
+  kontrol.setMapping("seaFreq", kontrol.SLIDER4, 10);
+  // base R component for sea
+  kontrol.setMapping("seaBaseR", kontrol.KNOB1, 2);
+  // base G component for sea
+  kontrol.setMapping("seaBaseG", kontrol.KNOB2, 4);
+  // base B component for sea
+  kontrol.setMapping("seaBaseB", kontrol.KNOB3, 9);
+  // water R
+  kontrol.setMapping("seaWaterR", kontrol.KNOB4, 100);
+  // water G
+  kontrol.setMapping("seaWaterG", kontrol.KNOB5, 120);
+  // water B
+  kontrol.setMapping("seaWaterB", kontrol.KNOB6, 130);
+  kontrol.setMapping("moveMultX", kontrol.SLIDER5, 0);
+  kontrol.setMapping("moveMultY", kontrol.SLIDER6, 0);
+  kontrol.setMapping("moveMultZ", kontrol.SLIDER7, 0);
+  kontrol.setMapping("hideFrame", kontrol.BUTTON_R5, 1);
 
-    // println("Handled " + channel + " " + number + " " + value);
-
-  }
-
+  // VDMX note controls
+  kontrol.setNoteControl("seaHeight", kontrol.VDMX_LOW);
 }

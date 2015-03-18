@@ -5,9 +5,7 @@ import processing.opengl.*;
 
 import toxi.color.*; 
 import toxi.color.theory.*; 
-import toxi.util.events.*; 
-import themidibus.*; 
-import codeanticode.syphon.*; 
+import lazer.viz.*; 
 
 import java.util.HashMap; 
 import java.util.ArrayList; 
@@ -25,11 +23,8 @@ public class ferries extends PApplet {
 
 
 
-
-MidiBus nanoKontrol;
-MidiBus vdmxKontrol;
-Controller kontrol;
-Sifon send;
+LazerController kontrol;
+LazerSyphon send;
 Colors colors;
 
 PImage img;
@@ -45,19 +40,14 @@ public void setup() {
 
     size(800, 600, P2D);
 
-    MidiBus.list();
-    nanoKontrol = new MidiBus(this, "SLIDER/KNOB", "CTRL", "nanoKontrol");
-    vdmxKontrol = new MidiBus(this, "From VDMX", "To VDMX", "vdmxKontrol");
-
-    kontrol = new Controller();
+    kontrol = new LazerController(this);
+    setControls();
 
     colors = new Colors(30*30);
 
-    println(width + "," + height);
-
     seedEngine = new Seeds(this, width, height);
 
-    send = new Sifon(this, width, height, P3D);
+    send = new LazerSyphon(this, width, height, P3D);
 
 }
 
@@ -90,57 +80,36 @@ public void draw() {
 
 }
 
-public void controllerChange(int channel, int number, int value, long timestamp, String bus_name) {
+public void setControls() {
+  kontrol.setMapping("hue", kontrol.KNOB1, 110);
+  kontrol.setMapping("sat", kontrol.KNOB2, 127);
+  kontrol.setMapping("bri", kontrol.KNOB3, 65);
+  kontrol.setMapping("xOffset", kontrol.KNOB4, 110);
+  kontrol.setMapping("yOffset", kontrol.KNOB5, 127);
+  kontrol.setMapping("zOffset", kontrol.KNOB6, 100);
+  kontrol.setMapping("steps", kontrol.KNOB8, 100);
+  kontrol.setMapping("setRandomBrightColors", kontrol.BUTTON_MARKER_SET);
+  kontrol.setMapping("setVoidColors", kontrol.BUTTON_MARKER_LEFT);
+  kontrol.setMapping("setRandomDarkColors", kontrol.BUTTON_MARKER_RIGHT);
+  kontrol.setMapping("drawPoints", kontrol.BUTTON_R1, 1);
+  kontrol.setMapping("bgAlpha", kontrol.KNOB7, 0);
+  kontrol.setMapping("useHSB", kontrol.BUTTON_RWD, 0);
+  kontrol.setMapping("useAlpha", kontrol.BUTTON_STOP, 0);
+  kontrol.setMapping("altRGB", kontrol.BUTTON_PLAY, 0);
+  kontrol.setMapping("diagonal", kontrol.BUTTON_REC, 0);
+  kontrol.setMapping("hideFrame", kontrol.BUTTON_R5, 1);
+  kontrol.setMapping("upIndex", kontrol.SLIDER1, 0);
+  kontrol.setMapping("downIndex", kontrol.SLIDER2, 0);
+  kontrol.setMapping("leftIndex", kontrol.SLIDER3, 0);
+  kontrol.setMapping("rightupIndex", kontrol.SLIDER4, 0);
+  kontrol.setMapping("ulIndex", kontrol.SLIDER5, 0);
+  kontrol.setMapping("llIndex", kontrol.SLIDER6, 0);
+  kontrol.setMapping("lrIndex", kontrol.SLIDER7, 0);
+  kontrol.setMapping("urIndex", kontrol.SLIDER8, 0);
 
-  // println(timestamp + " - Handled controllerChange " + channel + " " + number + " " + value + " " + bus_name);
-
-  if (bus_name == "nanoKontrol") {
-    kontrol.handleMidiEvent(channel, number, value);
-
-    if (number == BUTTON_TRACK_NEXT) {
-
-      if (value == 127) {
-        println("beat");
-        //beatManager.setBeat();
-      }
-    }
-  }
-
-  if (bus_name == "vdmxKontrol") {
-
-    // println("Handled " + channel + " " + number + " " + value);
-
-  }
-
-}
-
-
-public void noteOn(int channel, int pad, int velocity, long timestamp, String bus_name) {
-  println(timestamp + " - Handled noteon " + channel + " " + pad + " " + velocity + " " + bus_name);
-
-  // kontrol.handleMidiEvent(channel, pad, velocity);
-  try {
-
-    if (channel == 0) {
-
-    }
-
-    if (channel == 1) {
-      kontrol.setControlValueFromNote("xOffset", pad);
-    }
-
-    if (channel == 2) {
-      kontrol.setControlValueFromNote("yOffset", pad);
-    }
-
-    if (channel == 3) {
-      kontrol.setControlValueFromNote("zOffset", pad);
-    }
-  } catch (Exception e) {
-
-  }
-
-
+  kontrol.setNoteControl("xOffset", kontrol.VDMX_LOW);
+  kontrol.setNoteControl("yOffset", kontrol.VDMX_MID);
+  kontrol.setNoteControl("zOffset", kontrol.VDMX_HIGH);
 
 }
 
@@ -595,221 +564,6 @@ class Seeds {
 
 
 
-
-}
-
-
-class Controller {
-
-
- int[] midiState;
-
- HashMap<String,Integer> mappings;
-
-
- public Controller() {
-   midiState = new int[128];
-   mappings = new HashMap<String, Integer>();
-   setMappings();
- }
-
-
- public int get(String mapping) {
-
-   try {
-//     println(mapping + ": " + midiState[mappings.get(mapping)]);
-     return midiState[mappings.get(mapping)];
-   }
-   catch (Exception e) {
-     println(mapping + ": -1");
-     return -1;
-   }
-
- }
-
-
- public void handleMidiEvent(int channel, int number, int val) {
-   println("Handled " + channel + " " + number + " " + val);
-   if (number >= 0) {
-     midiState[number] = val;
-   }
-
- }
-
-
-  public void setControlValueFromNote(String name, int value) {
-   midiState[mappings.get(name)] = value;
- }
-
-
- public void setMapping(String name, int control) {
-   mappings.put(name, control);
- }
-
- public void setMapping(String name, int control, int initialValue) {
-  mappings.put(name, control);
-  midiState[mappings.get(name)] = initialValue;
- }
-
-
- public void setMappings() {
-
-  setMapping("hue", KNOB1, 110);
-  setMapping("sat", KNOB2, 127);
-  setMapping("bri", KNOB3, 65);
-  setMapping("xOffset", KNOB4, 110);
-  setMapping("yOffset", KNOB5, 127);
-  setMapping("zOffset", KNOB6, 100);
-
-  setMapping("steps", KNOB8, 100);
-
-  setMapping("setRandomBrightColors", BUTTON_MARKER_SET);
-  setMapping("setVoidColors", BUTTON_MARKER_LEFT);
-  setMapping("setRandomDarkColors", BUTTON_MARKER_RIGHT);
-
-  setMapping("drawPoints", BUTTON_R1, 1);
-
-  setMapping("bgAlpha", KNOB7, 0);
-
-  // modes
-  setMapping("useHSB", BUTTON_RWD, 0);
-  setMapping("useAlpha", BUTTON_STOP, 0);
-  setMapping("altRGB", BUTTON_PLAY, 0);
-  setMapping("diagonal", BUTTON_REC, 0);
-
-  setMapping("hideFrame", BUTTON_R5, 1);
-
-
-  setMapping("upIndex", SLIDER1, 0);
-  setMapping("downIndex", SLIDER2, 0);
-  setMapping("leftIndex", SLIDER3, 0);
-  setMapping("rightupIndex", SLIDER4, 0);
-  setMapping("ulIndex", SLIDER5, 0);
-  setMapping("llIndex", SLIDER6, 0);
-  setMapping("lrIndex", SLIDER7, 0);
-  setMapping("urIndex", SLIDER8, 0);
-
-
-
- }
-
-  public void printMappings() {
-   int i = 1;
-   pushMatrix();
-   pushStyle();
-   translate(0, 0, 1);
-   fill(0, 0, 0, 80);
-   strokeWeight(1);
-   stroke(0, 0, 0);
-   rect(0, 0, 200, height);
-
-   text("Mappings", 10, 10);
-   for (String key : mappings.keySet()) {
-
-      drawMapping(key, ++i);
-
-
-   }
-
-   popStyle();
-   popMatrix();
-
-
- }
-
- public void drawMapping(String key, int i) {
-
-   int x = 10;
-   int y = 20 + (i * 20);
-
-   fill(255, 150, 200, 100);
-   rect(x - 1, y-10, this.get(key), 15);
-   fill(255, 0, 255);
-   text(key + " = " + this.get(key), x, y);
- }
-
-
-
-
-}
-static int SLIDER1 = 0;
-static int SLIDER2 = 1;
-static int  SLIDER3 = 2;
-static int  SLIDER4 = 3;
-static int  SLIDER5 = 4;
-static int  SLIDER6 = 5;
-static int  SLIDER7 = 6;
-static int  SLIDER8 = 7;
-static int  KNOB1 = 16;
-static int  KNOB2 = 17;
-static int  KNOB3 = 18;
-static int  KNOB4 = 19;
-static int  KNOB5 = 20;
-static int  KNOB6 = 21;
-static int  KNOB7 = 22;
-static int  KNOB8 = 23;
-static int BUTTON_RWD = 43;
-static int BUTTON_FWD = 44;
-static int BUTTON_PLAY = 41;
-static int BUTTON_STOP = 42;
-static int BUTTON_REC = 45;
-static int BUTTON_S1 = 32;
-static int BUTTON_S2 = 33;
-static int BUTTON_S3 = 34;
-static int BUTTON_S4 = 35;
-static int BUTTON_S5 = 36;
-static int BUTTON_S6 = 37;
-static int BUTTON_S7 = 38;
-static int BUTTON_S8 = 39;
-static int BUTTON_M1 = 48;
-static int BUTTON_M2 = 49;
-static int BUTTON_M3 = 50;
-static int BUTTON_M4 = 51;
-static int BUTTON_M5 = 52;
-static int BUTTON_M6 = 53;
-static int BUTTON_M7 = 54;
-static int BUTTON_M8 = 55;
-static int BUTTON_R1 = 64;
-static int BUTTON_R2 = 65;
-static int BUTTON_R3 = 66;
-static int BUTTON_R4 = 67;
-static int BUTTON_R5 = 68;
-static int BUTTON_R6 = 69;
-static int BUTTON_R7 = 70;
-static int BUTTON_R8 = 71;
-static int BUTTON_CYCLE = 46;
-static int BUTTON_MARKER_SET = 60;
-static int BUTTON_MARKER_LEFT = 61;
-static int BUTTON_MARKER_RIGHT = 62;
-static int BUTTON_TRACK_PREV = 58;
-static int BUTTON_TRACK_NEXT = 59;
-
-
-
-class Sifon {
-
-  public PGraphics g;
-  public SyphonServer server;
-
-  Sifon(PApplet p, int width, int height, String rendererType){
-    g = p.createGraphics(width, height, P3D);
-
-    server = new SyphonServer(p, "Processing Syphon");
-  }
-
-  public void send(){
-    server.sendImage(g);
-  }
-
-
-  public void begin() {
-    g.beginDraw();
-    g.colorMode(RGB, 255);
-  }
-
-  public void end() {
-    g.endDraw();
-  }
 
 }
   static public void main(String[] passedArgs) {

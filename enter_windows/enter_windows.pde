@@ -1,21 +1,18 @@
 import toxi.color.*;
 import toxi.color.theory.*;
-import toxi.util.datatypes.*;
-import toxi.util.events.*;
-import themidibus.*;
 
-MidiBus nanoKontrol;
-MidiBus vdmxKontrol;
-Controller kontrol;
-Sifon send;
+import lazer.viz.*;
+
+LazerController kontrol;
+LazerSyphon send;
 
 int numstars=100;
 int SPREAD=64;
 int CX,CY;
 float SPEED=5;
 
-int width = 4104;
-int height = 2520;
+int width = 1024;
+int height = 768;
 
 PImage windows;
 PImage winSprite;
@@ -36,13 +33,10 @@ void setup(){
   noFill();
   CX=width/2 ; CY=height/2;
 
-  MidiBus.list();
-  nanoKontrol = new MidiBus(this, "SLIDER/KNOB", "CTRL", "nanoKontrol");
-  vdmxKontrol = new MidiBus(this, "From VDMX", "To VDMX", "vdmxKontrol");
+  kontrol = new LazerController(this);
+  setControls();
 
-  kontrol = new Controller();
-
-  send = new Sifon(this, width, height, P2D);
+  send = new LazerSyphon(this, width, height, P2D);
 
   windows = loadImage("windows.png");
   winSprite = loadImage("win98.gif");
@@ -139,52 +133,16 @@ PImage getRandomImage() {
 
 }
 
+void setControls() {
+  kontrol.setMapping("speed", kontrol.SLIDER4, 2);
+  kontrol.setMapping("spread", kontrol.SLIDER5, 60);
+  kontrol.setMapping("maxSize", kontrol.SLIDER6, 50);
+  kontrol.setMapping("drawBackground", kontrol.BUTTON_REC);
+  kontrol.setMapping("drawWindows", kontrol.BUTTON_RWD);
+  kontrol.setMapping("drawFloppies", kontrol.BUTTON_FWD);
+  kontrol.setMapping("drawWhat", kontrol.KNOB5, 50);
+  kontrol.setMapping("hideFrame", kontrol.BUTTON_R5, 1);
 
-
-
-
-void controllerChange(int channel, int number, int value, long timestamp, String bus_name) {
-
-  // println(timestamp + " - Handled controllerChange " + channel + " " + number + " " + value + " " + bus_name);
-
-  if (bus_name == "nanoKontrol") {
-    kontrol.handleMidiEvent(channel, number, value);
-
-    if (number == BUTTON_TRACK_NEXT) {
-
-      if (value == 127) {
-        println("beat");
-        //beatManager.setBeat();
-      }
-    }
-  }
-
-  if (bus_name == "vdmxKontrol") {
-
-    // println("Handled " + channel + " " + number + " " + value);
-
-  }
+  kontrol.setNoteControl("maxSize", kontrol.VDMX_LOW);
 
 }
-
-
-void noteOn(int channel, int pad, int velocity, long timestamp, String bus_name) {
-
-  // println(timestamp + " - Handled noteon " + channel + " " + pad + " " + velocity + " " + bus_name);
-
-  // kontrol.handleMidiEvent(channel, pad, velocity);
-
-  // if (channel == 1) {
-  //   kontrol.setControlValueFromNote("spread", pad);
-  // }
-
-  if (channel == 1) {
-    kontrol.setControlValueFromNote("maxSize", pad);
-  }
-
-
-
-
-}
-
-

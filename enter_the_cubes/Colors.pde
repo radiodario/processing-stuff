@@ -1,51 +1,51 @@
 
 class Colors {
- 
+
   ColorTheme t;
   ColorList l;
   int colorCounter;
   int numColors;
-  
+
   public Colors(int numColors) {
-    this.numColors = numColors; 
-    
+    this.numColors = numColors;
+
     this.colorCounter = 0;
-    
+
     setRandomBrightColors();
   }
- 
+
   void setRandomBrightColors() {
     t = new ColorTheme("random");
-    
+
     t.addRange(ColorRange.BRIGHT, TColor.newRandom(), random(0.02, 0.5));
     t.addRange(ColorRange.BRIGHT, TColor.newRandom(), random(0.02, 0.5));
     t.addRange(ColorRange.BRIGHT, TColor.newRandom(), random(0.02, 0.5));
     t.addRange(ColorRange.BRIGHT, TColor.newRandom(), random(0.02, 0.5));
     t.addRange(ColorRange.BRIGHT, TColor.newRandom(), random(0.02, 0.5));
-    
+
     l = t.getColors(numColors);
-    
-    
+
+
   }
-  
+
   void setRandomDarkColors() {
     t = new ColorTheme("random");
-    
+
     t.addRange(ColorRange.INTENSE, TColor.newRandom(), random(0.02, 0.5));
     t.addRange(ColorRange.INTENSE, TColor.newRandom(), random(0.02, 0.5));
     t.addRange(ColorRange.INTENSE, TColor.newRandom(), random(0.02, 0.5));
     t.addRange(ColorRange.INTENSE, TColor.newRandom(), random(0.02, 0.5));
     t.addRange(ColorRange.INTENSE, TColor.newRandom(), random(0.02, 0.5));
-    
+
     l = t.getColors(numColors);
-    
-    
+
+
   }
- 
- 
+
+
   void setVoidColors() {
     t = new ColorTheme("enter_the_void");
-  
+
     t.addRange(ColorRange.BRIGHT, TColor.newHex("34232a"), 0.5547332);
     t.addRange(ColorRange.BRIGHT, TColor.newHex("5e3f6b"), 0.12577668);
     t.addRange(ColorRange.BRIGHT, TColor.newHex("895844"), 0.07337354);
@@ -109,38 +109,38 @@ class Colors {
     t.addRange(ColorRange.BRIGHT, TColor.newHex("bffff4"), 4.5687135E-5);
     t.addRange(ColorRange.BRIGHT, TColor.newHex("739f85"), 4.5687135E-5);
     t.addRange(ColorRange.BRIGHT, TColor.newHex("acbee2"), 4.5687135E-5);
-   
+
     l = t.getColors(numColors);
 
   }
- 
- 
+
+
   int getAColor() {
-    
+
      return l.get((int) random(numColors)).toARGB();
-    
-    
+
+
   }
-  
+
   int getNextColor() {
     return l.get(++colorCounter % numColors).toARGB();
-    
+
   }
-  
+
   void update() {
     if (kontrol.get("setRandomBrightColors") > 0) {
       colors.setRandomBrightColors();
     }
-    
+
     if (kontrol.get("setRandomDarkColors") > 0) {
       colors.setRandomDarkColors();
     }
-    
-    
+
+
     if (kontrol.get("setVoidColors") > 0) {
       colors.setVoidColors();
-    } 
-    
+    }
+
   }
-  
+
 }

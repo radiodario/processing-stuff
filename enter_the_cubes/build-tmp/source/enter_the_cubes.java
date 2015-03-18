@@ -5,10 +5,7 @@ import processing.opengl.*;
 
 import toxi.color.*; 
 import toxi.color.theory.*; 
-import toxi.util.datatypes.*; 
-import toxi.util.events.*; 
-import themidibus.*; 
-import codeanticode.syphon.*; 
+import lazer.viz.*; 
 
 import java.util.HashMap; 
 import java.util.ArrayList; 
@@ -24,48 +21,47 @@ public class enter_the_cubes extends PApplet {
 
 
 
+//import toxi.util.datatypes.*;
 
 
+
+
+LazerController kontrol;
+LazerSyphon s;
 
 
 Cubes cubes;
 Colors colors;
-MidiBus nanoKontrol;
-MidiBus vdmxKontrol;
-Controller kontrol;
-BeatManager beatManager;
-Sifon s;
+
 Boolean setupReady = false;
 
 int width = 1024;
 int height = 768;
 
 public void setup()  {
-//  size(640, 480, P3D);
   size(800, 600, P2D);
-// size(displayWidth, displayHeight, P3D);
-//  noStroke();
+
   frameRate(60);
 
-  MidiBus.list();
-  nanoKontrol = new MidiBus(this, "SLIDER/KNOB", "CTRL", "nanoKontrol");
-  vdmxKontrol = new MidiBus(this, "From VDMX", "To VDMX", "vdmxKontrol");
-  beatManager = new BeatManager();
 
-  beatManager.start();
-
-  kontrol = new Controller();
+  kontrol = new LazerController(this);
 
   colors = new Colors(30*30);
-  cubes = new Cubes(30, beatManager);
+  cubes = new Cubes(30, kontrol.beatManager);
 
-  s = new Sifon(this, width, height, P3D);
+  s = new LazerSyphon(this, width, height, P3D);
+
+  setControls();
 
   setupReady = true;
 
 }
 
 public void draw()  {
+
+  if (kontrol.get("avoidBeat") > 0) {
+    kontrol.beatManager.setBeat();
+  }
 
   s.begin();
   if (kontrol.get("ortho") == 0) {
@@ -98,163 +94,42 @@ public void draw()  {
   cubes.update();
 }
 
+public void setControls() {
 
-public void controllerChange(int channel, int number, int value, long timestamp, String bus_name) {
-
-  // println(timestamp + " - Handled controllerChange " + channel + " " + number + " " + value + " " + bus_name);
-
-  if (bus_name == "nanoKontrol") {
-    kontrol.handleMidiEvent(channel, number, value);
-
-    if (number == BUTTON_TRACK_NEXT) {
-
-      if (value == 127) {
-        println("beat");
-        beatManager.setBeat();
-      }
-    }
-  }
-
-  if (bus_name == "vdmxKontrol") {
-
-    // text("Handled " + channel + " " + number + " " + value, 50, 10);
-
-  }
-
-}
-
-
-public void noteOn(int channel, int pad, int velocity, long timestamp, String bus_name) {
-
-  // if (setupReady) {
-  //   // text(timestamp + " - Handled noteon " + channel + " " + pad + " " + velocity + " " + bus_name, 50, 100);
-  // }
-
-  // kontrol.handleMidiEvent(channel, pad, velocity);
-
-  if (pad == 0) {
-    beatManager.beat();
-  }
-
-  if (channel == 2) {
-    kontrol.setControlValueFromNote("decay", pad);
-  }
+  kontrol.setMapping("decay",  kontrol.SLIDER1, 10);
+  kontrol.setMapping("resetLife",  kontrol.BUTTON_CYCLE);
+  kontrol.setMapping("fullLife", kontrol.BUTTON_TRACK_PREV);
+  kontrol.setMapping("avoidBeat",  kontrol.BUTTON_TRACK_NEXT);
+  kontrol.setMapping("resetLife",  kontrol.BUTTON_R2);
+  kontrol.setMapping("setRandomBrightColors",  kontrol.BUTTON_MARKER_SET, 1);
+  kontrol.setMapping("setVoidColors",  kontrol.BUTTON_MARKER_LEFT);
+  kontrol.setMapping("setRandomDarkColors",  kontrol.BUTTON_MARKER_RIGHT);
+  kontrol.setMapping("randomGrowth", kontrol.BUTTON_R3, 1);
+  kontrol.setMapping("fill", kontrol.BUTTON_S1, 1);
+  kontrol.setMapping("stroke", kontrol.BUTTON_M1, 0);
+  kontrol.setMapping("strokeWidth",  kontrol.SLIDER2);
+  kontrol.setMapping("fov",  kontrol.SLIDER7);
+  kontrol.setMapping("hue",  kontrol.KNOB1, 127);
+  kontrol.setMapping("sat",  kontrol.KNOB2, 100);
+  kontrol.setMapping("bri",  kontrol.KNOB3, 127);
+  kontrol.setMapping("randomFill", kontrol.BUTTON_S2);
+  kontrol.setMapping("randomStroke", kontrol.BUTTON_M2);
+  kontrol.setMapping("nextFill", kontrol.BUTTON_S3, 1);
+  kontrol.setMapping("nextStroke", kontrol.BUTTON_M3);
+  kontrol.setMapping("rotate", kontrol.BUTTON_S4);
+  kontrol.setMapping("rotateX",  kontrol.KNOB4);
+  kontrol.setMapping("rotateY",  kontrol.KNOB5);
+  kontrol.setMapping("rotateZ",  kontrol.KNOB6);
+  kontrol.setMapping("zJitter",  kontrol.BUTTON_S6);
+  kontrol.setMapping("zJitterAmount",  kontrol.SLIDER6);
+  kontrol.setMapping("sphere", kontrol.BUTTON_RWD);
+  kontrol.setMapping("sphereDetail", kontrol.SLIDER8);
+  kontrol.setMapping("ortho",  kontrol.BUTTON_REC);
+  kontrol.setMapping("lights", kontrol.BUTTON_R1,1);
+  kontrol.setMapping("hideFrame",  kontrol.BUTTON_R5, 1);
 
 
-
-}
-
-
-interface BeatListener {
-  public void beat(); 
-}
-
-class BeatManager {
-  EventDispatcher<BeatListener> listeners = new EventDispatcher<BeatListener>();
-  
-  int count = 0;
-  int msecsFirst = 0;
-  int msecsPrevious = 0;
-    
-  BeatThread b;
- 
-  
-  BeatManager() {
-    b = new BeatThread(this, millis(), 60000/120);
-  }
-  
-  
-  public void resetCount() {
-    
-    count = 0;
-
-  }
- 
-  public void start() {
-    b.start(); 
-  }
-  
-  public void setBeat() {
-    b.stopit();
-    int msecs = millis();
-   
-    
-    if ((msecs - msecsPrevious) > 2000) {
-       resetCount();
-    }
-    
-    if (count == 0) {
-      msecsFirst = msecs;
-      count = 1;
-    } else {
-      
-      int bpmAvg = 60000 * count / (msecs - msecsFirst);
-      
-      println("bpm:" + (bpmAvg));
-      
-      b = new BeatThread(this, msecs, 60000 / bpmAvg);
-      b.start();
-      count++;
-    } 
-      
-    
-    msecsPrevious = msecs;
-    
-  }
-  
-  //trigger 
-  public void broadcastEvent(BeatThread t) {
-   for (BeatListener l : listeners) {
-     l.beat();
-   } 
-  }
-
-  public void beat() {
-   for (BeatListener l : listeners) {
-     l.beat();
-   } 
-  }
-
-  
-  
-}
-
-// the beat clock thread
-class BeatThread extends Thread {
-  long timeStamp;
-  long interval;
-  int MINUTE = 60000;
-  boolean running;
-  BeatManager parent;
-  
-  BeatThread(BeatManager parent, long timeStamp, int interval) {
-    this.parent = parent;
-    this.timeStamp = timeStamp;
-    this.interval = interval;
-    this.running = true;
-  }
-   
-  public void run() {
-   while (running) {
-      beat(); 
-    }
-   
-  }
-  
-  public void stopit() {
-    this.running = false;
-  }
-  
-  public void beat() {
-    try {
-      //parent.broadcastEvent(this);
-      Thread.sleep(interval);
-    } catch(InterruptedException e) {      
-    }
-  }
-  
-  
-  
+  kontrol.setNoteControl("decay", kontrol.VDMX_MID);
 }
 
 class Colors {
@@ -403,8 +278,8 @@ class Colors {
   
 }
 
-class Cube implements BeatListener {
-  
+class Cube implements LazerBeatListener {
+
   int x;
   int y;
   int z;
@@ -413,7 +288,7 @@ class Cube implements BeatListener {
   int l;
   float life = 1;
   int size;
-    
+
   public Cube(int x, int y, int size) {
     this.x = x;
     this.y = y;
@@ -423,50 +298,50 @@ class Cube implements BeatListener {
 
   public void beat() {
     if (kontrol.get("avoidBeat") == 0) {
-      this.life = 0; 
+      this.life = 0;
     }
   }
 
   public void draw(PGraphics p) {
     p.pushMatrix();
-    
+
     if (kontrol.get("zJitter") > 0) {
       int amt = kontrol.get("zJitterAmount");
       z = (int) random(-amt, amt);
     } else {
       z = 0;
     }
-    
+
     p.translate(x, y, z);
-    
+
     p.pushMatrix();
     if (kontrol.get("rotate") > 0) {
       p.rotateX(map(kontrol.get("rotateX"), 0, 127, 0, 2*PI));
       p.rotateY(map(kontrol.get("rotateY"), 0, 127, 0, 2*PI));
       p.rotateZ(map(kontrol.get("rotateZ"), 0, 127, 0, 2*PI));
     } else {
-      p.rotateX(-PI/4); 
+      p.rotateX(-PI/4);
       p.rotateY(PI/4);
     }
-    
+
     if (kontrol.get("fill") > 0) {
-      
+
       if (kontrol.get("randomFill") > 0) {
         p.fill(colors.getAColor());
       } else if (kontrol.get("nextFill") > 0) {
         p.fill(colors.getNextColor());
       } else {
         p.fill(kontrol.get("hue"), kontrol.get("sat"), kontrol.get("bri"));
-      }  
-      
-      
+      }
+
+
     } else {
       p.noFill();
     }
-    
+
     p.strokeWeight(map(kontrol.get("strokeWidth"), 0, 127, 0.5f, 100));
-    
-    
+
+
     if (kontrol.get("stroke") > 0) {
       if (kontrol.get("randomStroke") > 0) {
         p.stroke(colors.getAColor());
@@ -478,8 +353,8 @@ class Cube implements BeatListener {
     } else {
       p.noStroke();
     }
-    
-    
+
+
     if (kontrol.get("sphere") > 0) {
       p.sphereDetail((int)map(kontrol.get("sphereDetail"), 0, 127, 1, 10));
       p.sphere(life*size);
@@ -489,39 +364,39 @@ class Cube implements BeatListener {
     p.popMatrix();
     p.popMatrix();
   }
-  
+
   public void setColor(int h, int s, int l) {
     this.h = h;
     this.s = s;
-    this.l = l;  
+    this.l = l;
   }
-  
-  
+
+
   public void update() {
-    
+
     if (kontrol.get("resetLife") > 0) {
       this.life = 0;
     }
-    
+
     if (kontrol.get("fullLife") > 0) {
       this.life = 0;
     }
-    
-    
+
+
     if (kontrol.get("randomGrowth") > 0) {
       float amt = map(kontrol.get("decay"), 0, 127, 0, 0.5f);
       this.life += random(-amt, amt) ;
     } else {
       float amt = map(kontrol.get("decay"), 0, 127, 0, 0.2f);
-      this.life += amt;  
+      this.life += amt;
     }
-    
 
-    
-    
+
+
+
   }
-  
-  public boolean dead() { 
+
+  public boolean dead() {
     return false;
 //    return (this.life <= 0);
   }
@@ -532,7 +407,7 @@ class Cubes {
   int numCubes;
   int cubesPerRow = 10;
 
-  public Cubes(int max, BeatManager beatManager) {
+  public Cubes(int max, LazerBeatManager beatManager) {
     int cubeSide = width/cubesPerRow;
 
     numCubes = 30*30;
@@ -567,7 +442,7 @@ class Cubes {
 
       Cube newCube = new Cube((int)x,(int) y, (int) cubeSide);
       cubes.add(newCube);
-      beatManager.listeners.addListener(newCube);
+      beatManager.register(newCube);
 
     }
 
@@ -605,227 +480,6 @@ class Cubes {
 
   }
 
-
-}
-
-
-class Controller {
-
-
- int[] midiState;
-
- HashMap<String,Integer> mappings;
-
-
- public Controller() {
-   midiState = new int[128];
-   mappings = new HashMap<String, Integer>();
-   setMappings();
- }
-
-
- public int get(String mapping) {
-
-   try {
-//     println(mapping + ": " + midiState[mappings.get(mapping)]);
-     return midiState[mappings.get(mapping)];
-   }
-   catch (Exception e) {
-     println(mapping + ": -1");
-     return -1;
-   }
-
- }
-
-
- public void handleMidiEvent(int channel, int number, int val) {
-   println("Handled " + channel + " " + number + " " + val);
-   if (number >= 0) {
-     midiState[number] = val;
-   }
-
- }
-
- public void setControlValueFromNote(String name, int value) {
-   midiState[mappings.get(name)] = value;
- }
-
-
-
- public void setMapping(String name, int control) {
-   mappings.put(name, control);
- }
-
-
- public void setMapping(String name, int control, int initialValue) {
-  mappings.put(name, control);
-  midiState[mappings.get(name)] = initialValue;
- }
-
- public void setMappings() {
-   setMapping("decay", SLIDER1, 10);
-   setMapping("resetLife", BUTTON_CYCLE);
-   setMapping("fullLife", BUTTON_TRACK_PREV);
-   setMapping("avoidBeat", BUTTON_TRACK_NEXT);
-   setMapping("resetLife", BUTTON_R2);
-   setMapping("setRandomBrightColors", BUTTON_MARKER_SET, 1);
-   setMapping("setVoidColors", BUTTON_MARKER_LEFT);
-   setMapping("setRandomDarkColors", BUTTON_MARKER_RIGHT);
-
-   setMapping("randomGrowth", BUTTON_R3, 1);
-
-   setMapping("fill", BUTTON_S1, 1);
-   setMapping("stroke", BUTTON_M1, 0);
-
-   setMapping("strokeWidth", SLIDER2);
-
-   setMapping("fov", SLIDER7);
-
-   setMapping("hue", KNOB1, 127);
-   setMapping("sat", KNOB2, 100);
-   setMapping("bri", KNOB3, 127);
-
-   setMapping("randomFill", BUTTON_S2);
-   setMapping("randomStroke", BUTTON_M2);
-
-   setMapping("nextFill", BUTTON_S3, 1);
-   setMapping("nextStroke", BUTTON_M3);
-
-   setMapping("rotate", BUTTON_S4);
-   setMapping("rotateX", KNOB4);
-   setMapping("rotateY", KNOB5);
-   setMapping("rotateZ", KNOB6);
-
-   setMapping("zJitter", BUTTON_S6);
-   setMapping("zJitterAmount", SLIDER6);
-
-   setMapping("sphere", BUTTON_RWD);
-   setMapping("sphereDetail", SLIDER8);
-
-   setMapping("ortho", BUTTON_REC);
-   setMapping("lights", BUTTON_R1,1);
-
-   setMapping("hideFrame", BUTTON_R5, 1);
-
- }
-
-
-  public void printMappings() {
-   int i = 1;
-   pushMatrix();
-   pushStyle();
-   translate(0, 0, 1);
-   fill(0, 0, 0, 80);
-   strokeWeight(1);
-   stroke(0, 0, 0);
-   rect(0, 0, 200, height);
-
-   text("Mappings", 10, 10);
-   for (String key : mappings.keySet()) {
-
-      drawMapping(key, ++i);
-
-
-   }
-
-   popStyle();
-   popMatrix();
-
-
- }
-
- public void drawMapping(String key, int i) {
-
-   int x = 10;
-   int y = 20 + (i * 20);
-
-   fill(255, 150, 200, 100);
-   rect(x - 1, y-10, this.get(key), 15);
-   fill(255, 0, 255);
-   text(key + " = " + this.get(key), x, y);
- }
-
-
-}
-static int SLIDER1 = 0;
-static int SLIDER2 = 1;
-static int  SLIDER3 = 2;
-static int  SLIDER4 = 3;
-static int  SLIDER5 = 4;
-static int  SLIDER6 = 5;
-static int  SLIDER7 = 6;
-static int  SLIDER8 = 7;
-static int  KNOB1 = 16;
-static int  KNOB2 = 17;
-static int  KNOB3 = 18;
-static int  KNOB4 = 19;
-static int  KNOB5 = 20;
-static int  KNOB6 = 21;
-static int  KNOB7 = 22;
-static int  KNOB8 = 23;
-static int BUTTON_RWD = 43;
-static int BUTTON_FWD = 44;
-static int BUTTON_PLAY = 41;
-static int BUTTON_STOP = 42;
-static int BUTTON_REC = 45;
-static int BUTTON_S1 = 32;
-static int BUTTON_S2 = 33;
-static int BUTTON_S3 = 34;
-static int BUTTON_S4 = 35;
-static int BUTTON_S5 = 36;
-static int BUTTON_S6 = 37;
-static int BUTTON_S7 = 38;
-static int BUTTON_S8 = 39;
-static int BUTTON_M1 = 48;
-static int BUTTON_M2 = 49;
-static int BUTTON_M3 = 50;
-static int BUTTON_M4 = 51;
-static int BUTTON_M5 = 52;
-static int BUTTON_M6 = 53;
-static int BUTTON_M7 = 54;
-static int BUTTON_M8 = 55;
-static int BUTTON_R1 = 64;
-static int BUTTON_R2 = 65;
-static int BUTTON_R3 = 66;
-static int BUTTON_R4 = 67;
-static int BUTTON_R5 = 68;
-static int BUTTON_R6 = 69;
-static int BUTTON_R7 = 70;
-static int BUTTON_R8 = 71;
-static int BUTTON_CYCLE = 46;
-static int BUTTON_MARKER_SET = 60;
-static int BUTTON_MARKER_LEFT = 61;
-static int BUTTON_MARKER_RIGHT = 62;
-static int BUTTON_TRACK_PREV = 58;
-static int BUTTON_TRACK_NEXT = 59;
-
-
-
-class Sifon {
-  
-  public PGraphics g;
-  public SyphonServer server;
-
-  Sifon(PApplet p, int width, int height, String rendererType){
-    g = p.createGraphics(width, height, P3D);
-    
-    server = new SyphonServer(p, "Processing Syphon");
-  }
- 
-  public void send(){
-    server.sendImage(g);
-  }
-
-
-  public void begin() {
-    g.beginDraw();
-    g.background(0);
-    g.colorMode(HSB, 127);
-  }
-
-  public void end() {
-    g.endDraw();
-  }
 
 }
   static public void main(String[] passedArgs) {

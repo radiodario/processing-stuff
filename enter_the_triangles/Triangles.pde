@@ -1,4 +1,4 @@
-class Triangles implements BeatListener {
+class Triangles implements LazerBeatListener {
 
   long size = 1;
   double soze;
@@ -41,14 +41,9 @@ class Triangles implements BeatListener {
 
   void beat() {
 
-    println("beat");
-
-    if (kontrol.get("beating") > 0) {
-
-      size = 1;
-
-
-    }
+    // if (kontrol.get("beating") > 0) {
+    //   size = 1;
+    // }
 
   }
 

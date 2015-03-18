@@ -4,7 +4,7 @@ class Cubes {
   int numCubes;
   int cubesPerRow = 10;
 
-  public Cubes(int max, BeatManager beatManager) {
+  public Cubes(int max, LazerBeatManager beatManager) {
     int cubeSide = width/cubesPerRow;
 
     numCubes = 30*30;
@@ -39,7 +39,7 @@ class Cubes {
 
       Cube newCube = new Cube((int)x,(int) y, (int) cubeSide);
       cubes.add(newCube);
-      beatManager.listeners.addListener(newCube);
+      beatManager.register(newCube);
 
     }
 

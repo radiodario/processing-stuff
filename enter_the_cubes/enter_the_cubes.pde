@@ -1,48 +1,47 @@
 
 import toxi.color.*;
 import toxi.color.theory.*;
-import toxi.util.datatypes.*;
-import toxi.util.events.*;
-import themidibus.*;
+//import toxi.util.datatypes.*;
+
+import lazer.viz.*;
+
+
+LazerController kontrol;
+LazerSyphon s;
+
 
 Cubes cubes;
 Colors colors;
-MidiBus nanoKontrol;
-MidiBus vdmxKontrol;
-Controller kontrol;
-BeatManager beatManager;
-Sifon s;
+
 Boolean setupReady = false;
 
 int width = 1024;
 int height = 768;
 
 void setup()  {
-//  size(640, 480, P3D);
   size(800, 600, P2D);
-// size(displayWidth, displayHeight, P3D);
-//  noStroke();
+
   frameRate(60);
 
-  MidiBus.list();
-  nanoKontrol = new MidiBus(this, "SLIDER/KNOB", "CTRL", "nanoKontrol");
-  vdmxKontrol = new MidiBus(this, "From VDMX", "To VDMX", "vdmxKontrol");
-  beatManager = new BeatManager();
 
-  beatManager.start();
-
-  kontrol = new Controller();
+  kontrol = new LazerController(this);
 
   colors = new Colors(30*30);
-  cubes = new Cubes(30, beatManager);
+  cubes = new Cubes(30, kontrol.beatManager);
 
-  s = new Sifon(this, width, height, P3D);
+  s = new LazerSyphon(this, width, height, P3D);
+
+  setControls();
 
   setupReady = true;
 
 }
 
 void draw()  {
+
+  if (kontrol.get("avoidBeat") > 0) {
+    kontrol.beatManager.setBeat();
+  }
 
   s.begin();
   if (kontrol.get("ortho") == 0) {
@@ -75,50 +74,40 @@ void draw()  {
   cubes.update();
 }
 
+void setControls() {
 
-void controllerChange(int channel, int number, int value, long timestamp, String bus_name) {
+  kontrol.setMapping("decay",  kontrol.SLIDER1, 10);
+  kontrol.setMapping("resetLife",  kontrol.BUTTON_CYCLE);
+  kontrol.setMapping("fullLife", kontrol.BUTTON_TRACK_PREV);
+  kontrol.setMapping("avoidBeat",  kontrol.BUTTON_TRACK_NEXT);
+  kontrol.setMapping("resetLife",  kontrol.BUTTON_R2);
+  kontrol.setMapping("setRandomBrightColors",  kontrol.BUTTON_MARKER_SET, 1);
+  kontrol.setMapping("setVoidColors",  kontrol.BUTTON_MARKER_LEFT);
+  kontrol.setMapping("setRandomDarkColors",  kontrol.BUTTON_MARKER_RIGHT);
+  kontrol.setMapping("randomGrowth", kontrol.BUTTON_R3, 1);
+  kontrol.setMapping("fill", kontrol.BUTTON_S1, 1);
+  kontrol.setMapping("stroke", kontrol.BUTTON_M1, 0);
+  kontrol.setMapping("strokeWidth",  kontrol.SLIDER2);
+  kontrol.setMapping("fov",  kontrol.SLIDER7);
+  kontrol.setMapping("hue",  kontrol.KNOB1, 127);
+  kontrol.setMapping("sat",  kontrol.KNOB2, 100);
+  kontrol.setMapping("bri",  kontrol.KNOB3, 127);
+  kontrol.setMapping("randomFill", kontrol.BUTTON_S2);
+  kontrol.setMapping("randomStroke", kontrol.BUTTON_M2);
+  kontrol.setMapping("nextFill", kontrol.BUTTON_S3, 1);
+  kontrol.setMapping("nextStroke", kontrol.BUTTON_M3);
+  kontrol.setMapping("rotate", kontrol.BUTTON_S4);
+  kontrol.setMapping("rotateX",  kontrol.KNOB4);
+  kontrol.setMapping("rotateY",  kontrol.KNOB5);
+  kontrol.setMapping("rotateZ",  kontrol.KNOB6);
+  kontrol.setMapping("zJitter",  kontrol.BUTTON_S6);
+  kontrol.setMapping("zJitterAmount",  kontrol.SLIDER6);
+  kontrol.setMapping("sphere", kontrol.BUTTON_RWD);
+  kontrol.setMapping("sphereDetail", kontrol.SLIDER8);
+  kontrol.setMapping("ortho",  kontrol.BUTTON_REC);
+  kontrol.setMapping("lights", kontrol.BUTTON_R1,1);
+  kontrol.setMapping("hideFrame",  kontrol.BUTTON_R5, 1);
 
-  // println(timestamp + " - Handled controllerChange " + channel + " " + number + " " + value + " " + bus_name);
 
-  if (bus_name == "nanoKontrol") {
-    kontrol.handleMidiEvent(channel, number, value);
-
-    if (number == BUTTON_TRACK_NEXT) {
-
-      if (value == 127) {
-        println("beat");
-        beatManager.setBeat();
-      }
-    }
-  }
-
-  if (bus_name == "vdmxKontrol") {
-
-    // text("Handled " + channel + " " + number + " " + value, 50, 10);
-
-  }
-
+  kontrol.setNoteControl("decay", kontrol.VDMX_MID);
 }
-
-
-void noteOn(int channel, int pad, int velocity, long timestamp, String bus_name) {
-
-  // if (setupReady) {
-  //   // text(timestamp + " - Handled noteon " + channel + " " + pad + " " + velocity + " " + bus_name, 50, 100);
-  // }
-
-  // kontrol.handleMidiEvent(channel, pad, velocity);
-
-  if (pad == 0) {
-    beatManager.beat();
-  }
-
-  if (channel == 2) {
-    kontrol.setControlValueFromNote("decay", pad);
-  }
-
-
-
-}
-
-

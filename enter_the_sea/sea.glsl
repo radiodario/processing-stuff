@@ -37,6 +37,7 @@ uniform float SEA_SPEED;// = 0.8;
 uniform float SEA_FREQ;// = 0.16;
 uniform vec3 SEA_BASE;// = vec3(0.1,0.19,0.22);
 uniform vec3 SEA_WATER_COLOR;// = vec3(1,0.9,0.6);
+uniform vec3 MOVE_MULTS;
 float SEA_TIME = iGlobalTime * SEA_SPEED;
 mat2 octave_m = mat2(1.6,1.2,-1.2,1.6);
 
@@ -186,7 +187,7 @@ void main(void) {
     float time = iGlobalTime * 0.3 + iMouse.x*0.01;
 
     // ray
-    vec3 ang = vec3(sin(time*1.0)*0.1,sin(time)*0.2+0.3,time);
+    vec3 ang = vec3(sin(time*1.0)*MOVE_MULTS.x,sin(time)*0.2+MOVE_MULTS.y,time*MOVE_MULTS.z);
     vec3 ori = vec3(0.0,3.5,time*5.0);
     vec3 dir = normalize(vec3(uv.xy,-2.0)); dir.z += length(uv) * 0.15;
     dir = normalize(dir) * fromEuler(ang);

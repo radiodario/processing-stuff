@@ -1,30 +1,26 @@
 PShader myShader;
-import themidibus.*;
 
-MidiBus nanoKontrol;
-MidiBus vdmxKontrol;
-Controller kontrol;
-Sifon send;
+import lazer.viz.*;
+
+LazerController kontrol;
+LazerSyphon send;
 
 PImage texture;
 
-int width = 1280;
-int height = 1024;
+int width = 1024;
+int height = 768;
 
 void setup() {
   size(800, 600, P3D);
 
-  MidiBus.list();
-  nanoKontrol = new MidiBus(this, "SLIDER/KNOB", "CTRL", "nanoKontrol");
-  vdmxKontrol = new MidiBus(this, "From VDMX", "To VDMX", "vdmxKontrol");
-
-  kontrol = new Controller();
+  kontrol = new LazerController(this);
+  setControls();
 
   myShader = loadShader("shader.glsl");
   myShader.set("amount", 0.0023);
   myShader.set("resolution", float(width), float(height));
 
-  send = new Sifon(this, width, height, P3D);
+  send = new LazerSyphon(this, width, height, P3D);
 
 }
 
@@ -68,18 +64,14 @@ void draw() {
   text("running", 10, 10);
 }
 
-void controllerChange(int channel, int number, int value, long timestamp, String bus_name) {
+void setControls() {
+  // how fast to gyrate
+  kontrol.setMapping("multi", kontrol.SLIDER1, 1);
+  // the width of the division
+  kontrol.setMapping("amount", kontrol.SLIDER2, 1);
+  // the width of the colour bars
+  kontrol.setMapping("width", kontrol.SLIDER3, 1);
 
-  // println(timestamp + " - Handled controllerChange " + channel + " " + number + " " + value + " " + bus_name);
 
-  if (bus_name == "nanoKontrol") {
-    kontrol.handleMidiEvent(channel, number, value);
-  }
-
-  if (bus_name == "vdmxKontrol") {
-
-    // println("Handled " + channel + " " + number + " " + value);
-
-  }
-
+  kontrol.setMapping("hideFrame", kontrol.BUTTON_R5, 1);
 }

@@ -1,13 +1,10 @@
 import toxi.color.*;
 import toxi.color.theory.*;
-import toxi.util.events.*;
-import themidibus.*;
 
+import lazer.viz.*;
 
-MidiBus nanoKontrol;
-MidiBus vdmxKontrol;
-Controller kontrol;
-Sifon send;
+LazerController kontrol;
+LazerSyphon send;
 Colors colors;
 
 PImage img;
@@ -23,19 +20,14 @@ void setup() {
 
     size(800, 600, P2D);
 
-    MidiBus.list();
-    nanoKontrol = new MidiBus(this, "SLIDER/KNOB", "CTRL", "nanoKontrol");
-    vdmxKontrol = new MidiBus(this, "From VDMX", "To VDMX", "vdmxKontrol");
-
-    kontrol = new Controller();
+    kontrol = new LazerController(this);
+    setControls();
 
     colors = new Colors(30*30);
 
-    println(width + "," + height);
-
     seedEngine = new Seeds(this, width, height);
 
-    send = new Sifon(this, width, height, P3D);
+    send = new LazerSyphon(this, width, height, P3D);
 
 }
 
@@ -68,56 +60,35 @@ void draw() {
 
 }
 
-void controllerChange(int channel, int number, int value, long timestamp, String bus_name) {
+void setControls() {
+  kontrol.setMapping("hue", kontrol.KNOB1, 110);
+  kontrol.setMapping("sat", kontrol.KNOB2, 127);
+  kontrol.setMapping("bri", kontrol.KNOB3, 65);
+  kontrol.setMapping("xOffset", kontrol.KNOB4, 110);
+  kontrol.setMapping("yOffset", kontrol.KNOB5, 127);
+  kontrol.setMapping("zOffset", kontrol.KNOB6, 100);
+  kontrol.setMapping("steps", kontrol.KNOB8, 100);
+  kontrol.setMapping("setRandomBrightColors", kontrol.BUTTON_MARKER_SET);
+  kontrol.setMapping("setVoidColors", kontrol.BUTTON_MARKER_LEFT);
+  kontrol.setMapping("setRandomDarkColors", kontrol.BUTTON_MARKER_RIGHT);
+  kontrol.setMapping("drawPoints", kontrol.BUTTON_R1, 1);
+  kontrol.setMapping("bgAlpha", kontrol.KNOB7, 0);
+  kontrol.setMapping("useHSB", kontrol.BUTTON_RWD, 0);
+  kontrol.setMapping("useAlpha", kontrol.BUTTON_STOP, 0);
+  kontrol.setMapping("altRGB", kontrol.BUTTON_PLAY, 0);
+  kontrol.setMapping("diagonal", kontrol.BUTTON_REC, 0);
+  kontrol.setMapping("hideFrame", kontrol.BUTTON_R5, 1);
+  kontrol.setMapping("upIndex", kontrol.SLIDER1, 0);
+  kontrol.setMapping("downIndex", kontrol.SLIDER2, 0);
+  kontrol.setMapping("leftIndex", kontrol.SLIDER3, 0);
+  kontrol.setMapping("rightupIndex", kontrol.SLIDER4, 0);
+  kontrol.setMapping("ulIndex", kontrol.SLIDER5, 0);
+  kontrol.setMapping("llIndex", kontrol.SLIDER6, 0);
+  kontrol.setMapping("lrIndex", kontrol.SLIDER7, 0);
+  kontrol.setMapping("urIndex", kontrol.SLIDER8, 0);
 
-  // println(timestamp + " - Handled controllerChange " + channel + " " + number + " " + value + " " + bus_name);
-
-  if (bus_name == "nanoKontrol") {
-    kontrol.handleMidiEvent(channel, number, value);
-
-    if (number == BUTTON_TRACK_NEXT) {
-
-      if (value == 127) {
-        println("beat");
-        //beatManager.setBeat();
-      }
-    }
-  }
-
-  if (bus_name == "vdmxKontrol") {
-
-    // println("Handled " + channel + " " + number + " " + value);
-
-  }
-
-}
-
-
-void noteOn(int channel, int pad, int velocity, long timestamp, String bus_name) {
-  println(timestamp + " - Handled noteon " + channel + " " + pad + " " + velocity + " " + bus_name);
-
-  // kontrol.handleMidiEvent(channel, pad, velocity);
-  try {
-
-    if (channel == 0) {
-
-    }
-
-    if (channel == 1) {
-      kontrol.setControlValueFromNote("xOffset", pad);
-    }
-
-    if (channel == 2) {
-      kontrol.setControlValueFromNote("yOffset", pad);
-    }
-
-    if (channel == 3) {
-      kontrol.setControlValueFromNote("zOffset", pad);
-    }
-  } catch (Exception e) {
-
-  }
-
-
+  kontrol.setNoteControl("xOffset", kontrol.VDMX_LOW);
+  kontrol.setNoteControl("yOffset", kontrol.VDMX_MID);
+  kontrol.setNoteControl("zOffset", kontrol.VDMX_HIGH);
 
 }

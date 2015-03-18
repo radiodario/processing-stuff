@@ -1,18 +1,13 @@
 import toxi.color.*;
 import toxi.color.theory.*;
-import toxi.util.datatypes.*;
-import toxi.util.events.*;
-import themidibus.*;
 
+import lazer.viz.*;
 
 Triangles triangles;
 Colors colors;
-MidiBus nanoKontrol;
-MidiBus vdmxKontrol;
-Controller kontrol;
 
-BeatManager beatManager;
-Sifon s;
+LazerController kontrol;
+LazerSyphon s;
 
 int width = 1024;
 int height = 768;
@@ -22,22 +17,12 @@ void setup() {
 
   triangles = new Triangles();
 
-
-  MidiBus.list();
-  nanoKontrol = new MidiBus(this, "SLIDER/KNOB", "CTRL", "nanoKontrol");
-  vdmxKontrol = new MidiBus(this, "From VDMX", "To VDMX", "vdmxKontrol");
-
-  beatManager = new BeatManager();
-
-  beatManager.start();
-
-  beatManager.listeners.addListener(triangles);
-
-  kontrol = new Controller();
-
+  kontrol = new LazerController(this);
+  kontrol.beatManager.register(triangles);
+  setControls();
   colors = new Colors(30*30);
 
-  s = new Sifon(this, width, height, P3D);
+  s = new LazerSyphon(this, width, height, P3D);
 
 }
 
@@ -47,9 +32,6 @@ void draw() {
   triangles.draw(s.g);
   s.end();
   s.send();
-
-
-
 
 
   background(0);
@@ -65,59 +47,39 @@ void draw() {
 
 }
 
-void controllerChange(int channel, int number, int value, long timestamp, String bus_name) {
+void setControls() {
+  kontrol.setMapping("decay", kontrol.SLIDER1, 100);
+  kontrol.setMapping("reset", kontrol.BUTTON_S8, 1);
+  kontrol.setMapping("fullLife", kontrol.BUTTON_TRACK_PREV);
+  kontrol.setMapping("resetLife", kontrol.BUTTON_R2);
+  kontrol.setMapping("setRandomBrightColors", kontrol.BUTTON_MARKER_SET);
+  kontrol.setMapping("setVoidColors", kontrol.BUTTON_MARKER_LEFT);
+  kontrol.setMapping("setRandomDarkColors", kontrol.BUTTON_MARKER_RIGHT);
+  kontrol.setMapping("beating", kontrol.BUTTON_PLAY);
+  kontrol.setMapping("showMappings", kontrol.BUTTON_R8);
+  kontrol.setMapping("randomGrowth", kontrol.BUTTON_R3);
+  kontrol.setMapping("fill", kontrol.BUTTON_S1);
+  kontrol.setMapping("stroke", kontrol.BUTTON_M1, 1);
+  kontrol.setMapping("strokeWidth", kontrol.SLIDER2, 2);
+  kontrol.setMapping("fov", kontrol.SLIDER7);
+  kontrol.setMapping("hue", kontrol.KNOB1, 127);
+  kontrol.setMapping("sat", kontrol.KNOB2, 65);
+  kontrol.setMapping("bri", kontrol.KNOB3, 127);
+  kontrol.setMapping("randomFill", kontrol.BUTTON_S2);
+  kontrol.setMapping("randomStroke", kontrol.BUTTON_M2);
+  kontrol.setMapping("nextFill", kontrol.BUTTON_S3);
+  kontrol.setMapping("nextStroke", kontrol.BUTTON_M3, 2);
+  kontrol.setMapping("rotate", kontrol.BUTTON_S4);
+  kontrol.setMapping("rotateX", kontrol.KNOB4);
+  kontrol.setMapping("rotateY", kontrol.KNOB5);
+  kontrol.setMapping("rotateZ", kontrol.KNOB6);
+  kontrol.setMapping("zJitter", kontrol.BUTTON_S6);
+  kontrol.setMapping("zJitterAmount", kontrol.SLIDER6);
+  kontrol.setMapping("sphere", kontrol.BUTTON_RWD);
+  kontrol.setMapping("sphereDetail", kontrol.SLIDER8, 10);
+  kontrol.setMapping("maxSize", kontrol.KNOB8);
+  kontrol.setMapping("hideFrame", kontrol.BUTTON_R5, 1);
 
-  //println(timestamp + " - Handled controllerChange " + channel + " " + number + " " + value + " " + bus_name);
-
-  if (bus_name == "nanoKontrol") {
-    kontrol.handleMidiEvent(channel, number, value);
-
-    if (number == BUTTON_TRACK_NEXT) {
-
-      if (value == 127) {
-        // println("beat");
-        beatManager.setBeat();
-      }
-    }
-  }
-
-  if (bus_name == "vdmxKontrol") {
-
-    // println("Handled " + channel + " " + number + " " + value);
-
-  }
-
-}
-
-
-void noteOn(int channel, int pad, int velocity, long timestamp, String bus_name) {
-
-  // println(timestamp + " - Handled noteon " + channel + " " + pad + " " + velocity + " " + bus_name);
-
-  // kontrol.handleMidiEvent(channel, pad, velocity);
-  try {
-    // beat channel
-    if (channel == 0) {
-
-      if (pad == 0) {
-        // println("beat");
-        beatManager.beat();
-      }
-
-    }
-
-    if (channel == 1) {
-      kontrol.setControlValueFromNote("strokeWidth", pad);
-    }
-
-    if (channel == 2) {
-      kontrol.setControlValueFromNote("strokeWidth", pad);
-    }
-
-  } catch (Exception e) {
-
-  }
-
-
-
+  kontrol.setNoteControl("strokeWidth", kontrol.VDMX_LOW);
+  kontrol.setNoteControl("strokeWidth", kontrol.VDMX_MID);
 }

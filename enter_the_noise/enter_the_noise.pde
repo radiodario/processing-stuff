@@ -1,14 +1,12 @@
 import toxi.color.*;
 import toxi.color.theory.*;
-import toxi.util.datatypes.*;
-import toxi.util.events.*;
-import themidibus.*;
+import lazer.viz.*;
 
-MidiBus nanoKontrol;
-MidiBus vdmxKontrol;
-Controller kontrol;
+
+LazerController kontrol;
+LazerSyphon send;
+
 Colors colors;
-Sifon send;
 
 int width = 1024;
 int height = 768;
@@ -18,13 +16,9 @@ Noisefield noisefield;
 void setup() {
   size(800, 600, P2D);
 
-  MidiBus.list();
-  nanoKontrol = new MidiBus(this, "SLIDER/KNOB", "CTRL", "nanoKontrol");
-  vdmxKontrol = new MidiBus(this, "From VDMX", "To VDMX", "vdmxKontrol");
-
-  kontrol = new Controller();
-
-  send = new Sifon(this, width, height, P3D);
+  kontrol = new LazerController(this);
+  setControls();
+  send = new LazerSyphon(this, width, height, P3D);
 
   colors = new Colors(30*30);
 
@@ -59,59 +53,38 @@ void draw() {
 
 }
 
+void setControls() {
+  kontrol.setMapping("bgAlpha", kontrol.SLIDER1, 10);
+  kontrol.setMapping("fgAlpha", kontrol.SLIDER2, 127);
+  kontrol.setMapping("hideFrame", kontrol.BUTTON_R5, 1);
+  kontrol.setMapping("strokeWidth", kontrol.SLIDER3, 10);
+  kontrol.setMapping("setRandomBrightColors", kontrol.BUTTON_MARKER_SET, 1);
+  kontrol.setMapping("setVoidColors", kontrol.BUTTON_MARKER_LEFT);
+  kontrol.setMapping("setRandomDarkColors", kontrol.BUTTON_MARKER_RIGHT);
+  kontrol.setMapping("setGradient", kontrol.BUTTON_CYCLE);
+  kontrol.setMapping("voidColors", kontrol.BUTTON_M1, 1);
+  kontrol.setMapping("reset", kontrol.BUTTON_TRACK_NEXT);
+  kontrol.setMapping("charwidth", kontrol.KNOB1, 10);
+  kontrol.setMapping("xSpeed", kontrol.SLIDER4, 64);
+  kontrol.setMapping("ySpeed", kontrol.SLIDER5, 64);
+  kontrol.setMapping("step", kontrol.KNOB7, 2);
+  kontrol.setMapping("rotate", kontrol.BUTTON_R4, 0);
+  kontrol.setMapping("factor", kontrol.BUTTON_R2, 0);
+  kontrol.setMapping("elevation", kontrol.SLIDER8, 0);
+  kontrol.setMapping("elevationFactor", kontrol.KNOB8);
+  kontrol.setMapping("updateRate", kontrol.KNOB3, 0);
+  kontrol.setMapping("drawLines", kontrol.BUTTON_PLAY, 1);
+  kontrol.setMapping("rotateCam", kontrol.BUTTON_S4);
+  kontrol.setMapping("zoom", kontrol.SLIDER6);
+  kontrol.setMapping("fov", kontrol.SLIDER7);
+  kontrol.setMapping("rotateX", kontrol.KNOB4);
+  kontrol.setMapping("rotateY", kontrol.KNOB5);
+  kontrol.setMapping("rotateZ", kontrol.KNOB6);
 
-void controllerChange(int channel, int number, int value, long timestamp, String bus_name) {
-
-  // println(timestamp + " - Handled controllerChange " + channel + " " + number + " " + value + " " + bus_name);
-
-  if (bus_name == "nanoKontrol") {
-    kontrol.handleMidiEvent(channel, number, value);
-
-    if (number == BUTTON_TRACK_NEXT) {
-
-      if (value == 127) {
-        println("beat");
-        //beatManager.setBeat();
-      }
-    }
-  }
-
-  if (bus_name == "vdmxKontrol") {
-
-    // println("Handled " + channel + " " + number + " " + value);
-
-  }
-
+  kontrol.setNoteControl("elevation", kontrol.VDMX_LOW);
+  //kontrol.setNoteControl("maxSize", kontrol.VDMX_MID);
+  //kontrol.setNoteControl("strokeWidth", kontrol.VDMX_HIGH);
 }
 
 
-void noteOn(int channel, int pad, int velocity, long timestamp, String bus_name) {
-
-  //println(timestamp + " - Handled noteon " + channel + " " + pad + " " + velocity + " " + bus_name);
-
-  // kontrol.handleMidiEvent(channel, pad, velocity);
-  try {
-
-    if (channel == 0) {
-      // piscina.beat();
-    }
-
-    if (channel == 1) {
-      kontrol.setControlValueFromNote("elevation", pad);
-    }
-
-    if (channel == 2) {
-      // kontrol.setControlValueFromNote("maxSize", pad);
-    }
-
-    if (channel == 3) {
-      // kontrol.setControlValueFromNote("strokeWidth", pad);
-    }
-  } catch (Exception e) {
-
-  }
-
-
-
-}
 

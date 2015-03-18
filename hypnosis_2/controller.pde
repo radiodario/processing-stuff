@@ -30,7 +30,7 @@ class Controller {
 
 
  void handleMidiEvent(int channel, int number, int value) {
-   println("Handled " + channel + " " + number + " " + value);
+   // println("Handled " + channel + " " + number + " " + value);
    if (number >= 0) {
      midiState[number] = value;
    }
@@ -55,45 +55,29 @@ class Controller {
 
 
  void setMappings() {
-   // add mappings here
-   setMapping("bgAlpha", SLIDER1, 10);
-   setMapping("fgAlpha", SLIDER2, 127);
-   setMapping("hideFrame", BUTTON_R5, 1);
 
-   setMapping("strokeWidth", SLIDER3, 10);
+  setMapping("scaleFactor", KNOB7, 100);
+  setMapping("iterations", KNOB8, 4);
+  setMapping("pParam", SLIDER1, 10);
+  setMapping("qParam", SLIDER2, 10);
+  setMapping("rParam", SLIDER3, 10);
+  setMapping("SRadius", SLIDER4, 10);
 
-   setMapping("setRandomBrightColors", BUTTON_MARKER_SET, 1);
-   setMapping("setVoidColors", BUTTON_MARKER_LEFT);
-   setMapping("setRandomDarkColors", BUTTON_MARKER_RIGHT);
-   setMapping("setGradient", BUTTON_CYCLE);
+  // base R component for sea
+  setMapping("segColorR", KNOB1, 2);
+  // base G component for sea
+  setMapping("segColorG", KNOB2, 4);
+  // base B component for sea
+  setMapping("segColorB", KNOB3, 9);
 
-   setMapping("voidColors", BUTTON_M1, 1);
+  // water R
+  setMapping("bgColorR", KNOB4, 100);
+  // water G
+  setMapping("bgColorG", KNOB5, 120);
+  // water B
+  setMapping("bgColorB", KNOB6, 130);
 
-   setMapping("reset", BUTTON_TRACK_NEXT);
-   setMapping("charwidth", KNOB1, 10);
-
-   setMapping("xSpeed", SLIDER4, 64);
-   setMapping("ySpeed", SLIDER5, 64);
-
-   setMapping("step", KNOB7, 2);
-
-   setMapping("rotate", BUTTON_R4, 0);
-
-   setMapping("factor", BUTTON_R2, 0);
-
-   setMapping("elevation", SLIDER8, 0);
-   setMapping("elevationFactor", KNOB8);
-
-   setMapping("updateRate", KNOB3, 0);
-
-   setMapping("drawLines", BUTTON_PLAY, 1);
-
-   setMapping("rotateCam", BUTTON_S4);
-   setMapping("zoom", SLIDER6);
-   setMapping("fov", SLIDER7);
-   setMapping("rotateX", KNOB4);
-   setMapping("rotateY", KNOB5);
-   setMapping("rotateZ", KNOB6);
+  setMapping("hideFrame", BUTTON_R5, 1);
 
  }
 

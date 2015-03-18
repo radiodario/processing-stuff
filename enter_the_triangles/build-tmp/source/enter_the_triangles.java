@@ -5,10 +5,7 @@ import processing.opengl.*;
 
 import toxi.color.*; 
 import toxi.color.theory.*; 
-import toxi.util.datatypes.*; 
-import toxi.util.events.*; 
-import themidibus.*; 
-import codeanticode.syphon.*; 
+import lazer.viz.*; 
 
 import java.util.HashMap; 
 import java.util.ArrayList; 
@@ -26,16 +23,11 @@ public class enter_the_triangles extends PApplet {
 
 
 
-
-
 Triangles triangles;
 Colors colors;
-MidiBus nanoKontrol;
-MidiBus vdmxKontrol;
-Controller kontrol;
 
-BeatManager beatManager;
-Sifon s;
+LazerController kontrol;
+LazerSyphon s;
 
 int width = 1024;
 int height = 768;
@@ -45,22 +37,12 @@ public void setup() {
 
   triangles = new Triangles();
 
-
-  MidiBus.list();
-  nanoKontrol = new MidiBus(this, "SLIDER/KNOB", "CTRL", "nanoKontrol");
-  vdmxKontrol = new MidiBus(this, "From VDMX", "To VDMX", "vdmxKontrol");
-
-  beatManager = new BeatManager();
-
-  beatManager.start();
-
-  beatManager.listeners.addListener(triangles);
-
-  kontrol = new Controller();
-
+  kontrol = new LazerController(this);
+  kontrol.beatManager.register(triangles);
+  setControls();
   colors = new Colors(30*30);
 
-  s = new Sifon(this, width, height, P3D);
+  s = new LazerSyphon(this, width, height, P3D);
 
 }
 
@@ -70,9 +52,6 @@ public void draw() {
   triangles.draw(s.g);
   s.end();
   s.send();
-
-
-
 
 
   background(0);
@@ -88,173 +67,42 @@ public void draw() {
 
 }
 
-public void controllerChange(int channel, int number, int value, long timestamp, String bus_name) {
+public void setControls() {
+  kontrol.setMapping("decay", kontrol.SLIDER1, 100);
+  kontrol.setMapping("reset", kontrol.BUTTON_S8, 1);
+  kontrol.setMapping("fullLife", kontrol.BUTTON_TRACK_PREV);
+  kontrol.setMapping("resetLife", kontrol.BUTTON_R2);
+  kontrol.setMapping("setRandomBrightColors", kontrol.BUTTON_MARKER_SET);
+  kontrol.setMapping("setVoidColors", kontrol.BUTTON_MARKER_LEFT);
+  kontrol.setMapping("setRandomDarkColors", kontrol.BUTTON_MARKER_RIGHT);
+  kontrol.setMapping("beating", kontrol.BUTTON_PLAY);
+  kontrol.setMapping("showMappings", kontrol.BUTTON_R8);
+  kontrol.setMapping("randomGrowth", kontrol.BUTTON_R3);
+  kontrol.setMapping("fill", kontrol.BUTTON_S1);
+  kontrol.setMapping("stroke", kontrol.BUTTON_M1, 1);
+  kontrol.setMapping("strokeWidth", kontrol.SLIDER2, 2);
+  kontrol.setMapping("fov", kontrol.SLIDER7);
+  kontrol.setMapping("hue", kontrol.KNOB1, 127);
+  kontrol.setMapping("sat", kontrol.KNOB2, 65);
+  kontrol.setMapping("bri", kontrol.KNOB3, 127);
+  kontrol.setMapping("randomFill", kontrol.BUTTON_S2);
+  kontrol.setMapping("randomStroke", kontrol.BUTTON_M2);
+  kontrol.setMapping("nextFill", kontrol.BUTTON_S3);
+  kontrol.setMapping("nextStroke", kontrol.BUTTON_M3, 2);
+  kontrol.setMapping("rotate", kontrol.BUTTON_S4);
+  kontrol.setMapping("rotateX", kontrol.KNOB4);
+  kontrol.setMapping("rotateY", kontrol.KNOB5);
+  kontrol.setMapping("rotateZ", kontrol.KNOB6);
+  kontrol.setMapping("zJitter", kontrol.BUTTON_S6);
+  kontrol.setMapping("zJitterAmount", kontrol.SLIDER6);
+  kontrol.setMapping("sphere", kontrol.BUTTON_RWD);
+  kontrol.setMapping("sphereDetail", kontrol.SLIDER8, 10);
+  kontrol.setMapping("maxSize", kontrol.KNOB8);
+  kontrol.setMapping("hideFrame", kontrol.BUTTON_R5, 1);
 
-  //println(timestamp + " - Handled controllerChange " + channel + " " + number + " " + value + " " + bus_name);
-
-  if (bus_name == "nanoKontrol") {
-    kontrol.handleMidiEvent(channel, number, value);
-
-    if (number == BUTTON_TRACK_NEXT) {
-
-      if (value == 127) {
-        // println("beat");
-        beatManager.setBeat();
-      }
-    }
-  }
-
-  if (bus_name == "vdmxKontrol") {
-
-    // println("Handled " + channel + " " + number + " " + value);
-
-  }
-
+  kontrol.setNoteControl("strokeWidth", kontrol.VDMX_LOW);
+  kontrol.setNoteControl("strokeWidth", kontrol.VDMX_MID);
 }
-
-
-public void noteOn(int channel, int pad, int velocity, long timestamp, String bus_name) {
-
-  // println(timestamp + " - Handled noteon " + channel + " " + pad + " " + velocity + " " + bus_name);
-
-  // kontrol.handleMidiEvent(channel, pad, velocity);
-  try {
-    // beat channel
-    if (channel == 0) {
-
-      if (pad == 0) {
-        // println("beat");
-        beatManager.beat();
-      }
-
-    }
-
-    if (channel == 1) {
-      kontrol.setControlValueFromNote("strokeWidth", pad);
-    }
-
-    if (channel == 2) {
-      kontrol.setControlValueFromNote("strokeWidth", pad);
-    }
-
-  } catch (Exception e) {
-
-  }
-
-
-
-}
-interface BeatListener {
-  public void beat();
-}
-
-class BeatManager {
-  EventDispatcher<BeatListener> listeners = new EventDispatcher<BeatListener>();
-
-  int count = 0;
-  int msecsFirst = 0;
-  int msecsPrevious = 0;
-
-  BeatThread b;
-
-
-  BeatManager() {
-    b = new BeatThread(this, millis(), 60000/120);
-  }
-
-
-  public void resetCount() {
-
-    count = 0;
-
-  }
-
-  public void start() {
-    b.start();
-  }
-
-  public void setBeat() {
-    b.stopit();
-    int msecs = millis();
-
-
-    if ((msecs - msecsPrevious) > 2000) {
-       resetCount();
-    }
-
-    if (count == 0) {
-      msecsFirst = msecs;
-      count = 1;
-    } else {
-
-      int bpmAvg = 60000 * count / (msecs - msecsFirst);
-
-      println("bpm:" + (bpmAvg));
-
-      b = new BeatThread(this, msecs, 60000 / bpmAvg);
-      b.start();
-      count++;
-    }
-
-
-    msecsPrevious = msecs;
-
-  }
-
-  //trigger
-  public void broadcastEvent(BeatThread t) {
-   for (BeatListener l : listeners) {
-     l.beat();
-   }
-  }
-
-  public void beat() {
-   for (BeatListener l : listeners) {
-     l.beat();
-   }
-  }
-
-
-
-};
-
-// the beat clock thread
-class BeatThread extends Thread {
-  long timeStamp;
-  long interval;
-  int MINUTE = 60000;
-  boolean running;
-  BeatManager parent;
-
-  BeatThread(BeatManager parent, long timeStamp, int interval) {
-    this.parent = parent;
-    this.timeStamp = timeStamp;
-    this.interval = interval;
-    this.running = true;
-  }
-
-  public void run() {
-   while (running) {
-      beat();
-    }
-
-  }
-
-  public void stopit() {
-    this.running = false;
-  }
-
-  public void beat() {
-    try {
-      //parent.broadcastEvent(this);
-      Thread.sleep(interval);
-    } catch(InterruptedException e) {
-    }
-  }
-
-
-
-};
 
 class Colors {
  
@@ -401,7 +249,7 @@ class Colors {
   }
   
 }
-class Triangles implements BeatListener {
+class Triangles implements LazerBeatListener {
 
   long size = 1;
   double soze;
@@ -444,14 +292,9 @@ class Triangles implements BeatListener {
 
   public void beat() {
 
-    println("beat");
-
-    if (kontrol.get("beating") > 0) {
-
-      size = 1;
-
-
-    }
+    // if (kontrol.get("beating") > 0) {
+    //   size = 1;
+    // }
 
   }
 
@@ -532,231 +375,6 @@ class Triangles implements BeatListener {
 
 
 
-
-}
-
-
-class Controller {
-
-
- int[] midiState;
-
- HashMap<String,Integer> mappings;
-
-
- public Controller() {
-   midiState = new int[128];
-   mappings = new HashMap<String, Integer>();
-   setMappings();
- }
-
-
- public int get(String mapping) {
-
-   try {
-//     println(mapping + ": " + midiState[mappings.get(mapping)]);
-     return midiState[mappings.get(mapping)];
-   }
-   catch (Exception e) {
-     println(mapping + ": -1 \n" + e);
-     return -1;
-   }
-
- }
-
-
- public void handleMidiEvent(int channel, int number, int value) {
-   println("Handled " + channel + " " + number + " " + value);
-   if (number >= 0) {
-     midiState[number] = value;
-   }
-
- }
-
-
- public void setControlValueFromNote(String name, int value) {
-   midiState[mappings.get(name)] = value;
- }
-
-
- public void setMapping(String name, int control) {
-   mappings.put(name, control);
-   midiState[control] = 0;
- }
-
- public void setMapping(String name, int control, int initialValue) {
-  mappings.put(name, control);
-  midiState[mappings.get(name)] = initialValue;
- }
-
-
- public void setMappings() {
-   setMapping("decay", SLIDER1, 100);
-   setMapping("reset", BUTTON_S8, 1);
-   setMapping("fullLife", BUTTON_TRACK_PREV);
-   setMapping("resetLife", BUTTON_R2);
-   setMapping("setRandomBrightColors", BUTTON_MARKER_SET);
-   setMapping("setVoidColors", BUTTON_MARKER_LEFT);
-   setMapping("setRandomDarkColors", BUTTON_MARKER_RIGHT);
-
-   setMapping("beating", BUTTON_PLAY);
-   setMapping("showMappings", BUTTON_R8);
-   setMapping("randomGrowth", BUTTON_R3);
-
-   setMapping("fill", BUTTON_S1);
-   setMapping("stroke", BUTTON_M1, 1);
-
-   setMapping("strokeWidth", SLIDER2, 2);
-
-   setMapping("fov", SLIDER7);
-
-   setMapping("hue", KNOB1, 127);
-   setMapping("sat", KNOB2, 65);
-   setMapping("bri", KNOB3, 127);
-
-   setMapping("randomFill", BUTTON_S2);
-   setMapping("randomStroke", BUTTON_M2);
-
-   setMapping("nextFill", BUTTON_S3);
-   setMapping("nextStroke", BUTTON_M3, 2);
-
-   setMapping("rotate", BUTTON_S4);
-   setMapping("rotateX", KNOB4);
-   setMapping("rotateY", KNOB5);
-   setMapping("rotateZ", KNOB6);
-
-   setMapping("zJitter", BUTTON_S6);
-   setMapping("zJitterAmount", SLIDER6);
-
-   setMapping("sphere", BUTTON_RWD);
-   setMapping("sphereDetail", SLIDER8, 10);
-
-   setMapping("maxSize", KNOB8);
-   setMapping("hideFrame", BUTTON_R5, 1);
-
- }
-
- public void printMappings() {
-   int i = 1;
-   pushMatrix();
-   pushStyle();
-   translate(0, 0, 1);
-   fill(0, 0, 0, 80);
-   strokeWeight(1);
-   stroke(0, 0, 0);
-   rect(0, 0, 200, height);
-
-   text("Mappings", 10, 10);
-   for (String key : mappings.keySet()) {
-
-      drawMapping(key, ++i);
-
-
-   }
-
-   popStyle();
-   popMatrix();
-
-
- }
-
- public void drawMapping(String key, int i) {
-
-   int x = 10;
-   int y = (i * 15);
-
-   fill(255, 150, 200, 100);
-   rect(x - 1, y-10, this.get(key), 14);
-   fill(255, 0, 255);
-   text(key + " = " + this.get(key), x, y);
- }
-
-
-
-}
-static int SLIDER1 = 0;
-static int SLIDER2 = 1;
-static int  SLIDER3 = 2;
-static int  SLIDER4 = 3;
-static int  SLIDER5 = 4;
-static int  SLIDER6 = 5;
-static int  SLIDER7 = 6;
-static int  SLIDER8 = 7;
-static int  KNOB1 = 16;
-static int  KNOB2 = 17;
-static int  KNOB3 = 18;
-static int  KNOB4 = 19;
-static int  KNOB5 = 20;
-static int  KNOB6 = 21;
-static int  KNOB7 = 22;
-static int  KNOB8 = 23;
-static int BUTTON_RWD = 43;
-static int BUTTON_FWD = 44;
-static int BUTTON_PLAY = 41;
-static int BUTTON_STOP = 42;
-static int BUTTON_REC = 45;
-static int BUTTON_S1 = 32;
-static int BUTTON_S2 = 33;
-static int BUTTON_S3 = 34;
-static int BUTTON_S4 = 35;
-static int BUTTON_S5 = 36;
-static int BUTTON_S6 = 37;
-static int BUTTON_S7 = 38;
-static int BUTTON_S8 = 39;
-static int BUTTON_M1 = 48;
-static int BUTTON_M2 = 49;
-static int BUTTON_M3 = 50;
-static int BUTTON_M4 = 51;
-static int BUTTON_M5 = 52;
-static int BUTTON_M6 = 53;
-static int BUTTON_M7 = 54;
-static int BUTTON_M8 = 55;
-static int BUTTON_R1 = 64;
-static int BUTTON_R2 = 65;
-static int BUTTON_R3 = 66;
-static int BUTTON_R4 = 67;
-static int BUTTON_R5 = 68;
-static int BUTTON_R6 = 69;
-static int BUTTON_R7 = 70;
-static int BUTTON_R8 = 71;
-static int BUTTON_CYCLE = 46;
-static int BUTTON_MARKER_SET = 60;
-static int BUTTON_MARKER_LEFT = 61;
-static int BUTTON_MARKER_RIGHT = 62;
-static int BUTTON_TRACK_PREV = 58;
-static int BUTTON_TRACK_NEXT = 59;
-static int BASS;
-static int MID;
-static int HIGH;
-static int PEAK;
-
-
-
-class Sifon {
-  
-  public PGraphics g;
-  public SyphonServer server;
-
-  Sifon(PApplet p, int width, int height, String rendererType){
-    g = p.createGraphics(width, height, P3D);
-    
-    server = new SyphonServer(p, "Processing Syphon");
-  }
- 
-  public void send(){
-    server.sendImage(g);
-  }
-
-
-  public void begin() {
-    g.beginDraw();
-    g.background(0);
-    g.colorMode(HSB, 127);
-  }
-
-  public void end() {
-    g.endDraw();
-  }
 
 }
   static public void main(String[] passedArgs) {
