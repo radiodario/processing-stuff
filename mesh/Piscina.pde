@@ -1,4 +1,4 @@
-class Piscina implements BeatListener {
+class Piscina implements LazerBeatListener {
 
   ArrayList triangles = new ArrayList();
   ArrayList points = new ArrayList();

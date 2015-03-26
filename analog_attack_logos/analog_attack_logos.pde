@@ -1,4 +1,3 @@
-import themidibus.*;
 
 PImage eindbaas;
 PImage analog;
@@ -13,10 +12,12 @@ PImage sabrepulse_bk;
 
 PImage current;
 
-Sifon s;
-Controller kontrol;
-MidiBus nanoKontrol;
-MidiBus vdmxKontrol;
+import lazer.viz.*;
+
+LazerSyphon s;
+LazerController kontrol;
+// MidiBus nanoKontrol;
+// MidiBus vdmxKontrol;
 
 int width = 1024;
 int height = 768;
@@ -37,59 +38,59 @@ void setup() {
   sabrepulse_bk = loadImage("sabrepulse_bk.png");
 
 
-  MidiBus.list();
-  nanoKontrol = new MidiBus(this, "SLIDER/KNOB", "CTRL", "nanoKontrol");
-  vdmxKontrol = new MidiBus(this, "From VDMX", "To VDMX", "vdmxKontrol");
+  // MidiBus.list();
+  // nanoKontrol = new MidiBus(this, "SLIDER/KNOB", "CTRL", "nanoKontrol");
+  // vdmxKontrol = new MidiBus(this, "From VDMX", "To VDMX", "vdmxKontrol");
 
 
-  kontrol = new Controller();
+  kontrol = new LazerController(this);
 
 
-  s = new Sifon(this, width, height, P2D);
+  s = new LazerSyphon(this, width, height, P2D);
 
 }
 
 
 void setImage() {
-  if (kontrol.get("eindbaas") > 0) {
-    current = eindbaas;
-  }
+  // if (kontrol.get("eindbaas") > 0) {
+  //   current = eindbaas;
+  // }
 
-  if (kontrol.get("analog") > 0) {
-    current = analog;
-  }
+  // if (kontrol.get("analog") > 0) {
+  //   current = analog;
+  // }
 
-  if (kontrol.get("ltc_bk") > 0) {
-    current = ltc_bk;
-  }
+  // if (kontrol.get("ltc_bk") > 0) {
+  //   current = ltc_bk;
+  // }
 
-  if (kontrol.get("ltc_wt") > 0) {
-    current = ltc_wt;
-  }
+  // if (kontrol.get("ltc_wt") > 0) {
+  //   current = ltc_wt;
+  // }
 
-  if (kontrol.get("treyfrey") > 0) {
-    current = treyfrey;
-  }
+  // if (kontrol.get("treyfrey") > 0) {
+  //   current = treyfrey;
+  // }
 
-  if (kontrol.get("shirobon") > 0) {
-    current = shirobon;
-  }
+  // if (kontrol.get("shirobon") > 0) {
+  //   current = shirobon;
+  // }
 
-  if (kontrol.get("jddj3j") > 0) {
-    current = jddj3j;
-  }
+  // if (kontrol.get("jddj3j") > 0) {
+  //   current = jddj3j;
+  // }
 
-  if (kontrol.get("chipzel") > 0) {
-    current = chipzel;
-  }
+  // if (kontrol.get("chipzel") > 0) {
+  //   current = chipzel;
+  // }
 
-  if (kontrol.get("sabrepulse_fc") > 0) {
+  // if (kontrol.get("sabrepulse_fc") > 0) {
     current = sabrepulse_fc;
-  }
+  // }
 
-  if (kontrol.get("sabrepulse_bk") > 0) {
-    current = sabrepulse_bk;
-  }
+  // if (kontrol.get("sabrepulse_bk") > 0) {
+  //   current = sabrepulse_bk;
+  // }
 
 }
 
@@ -114,10 +115,10 @@ void draw() {
 
   background(0);
   fill(255);
-  if (kontrol.get("hideFrame") > 0) {
+  // if (kontrol.get("hideFrame") > 0) {
     text("preview:", 200, 90);
     image(s.g, 200, 100, width/2, height/2);
-  }
+  // }
   kontrol.printMappings();
   text("running", 10, 10);
 

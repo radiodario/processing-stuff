@@ -6,10 +6,10 @@ PImage vonpnok;
 PImage monodeerTri;
 PImage monodeerType;
 
-Sifon s;
-Controller kontrol;
-MidiBus nanoKontrol;
-MidiBus vdmxKontrol;
+
+
+LazerSyphon s;
+LazerController kontrol;
 
 int width = 1024;
 int height = 768;
@@ -25,15 +25,10 @@ void setup() {
   chibitech = loadImage("chibitech.png");
 
 
-  MidiBus.list();
-  nanoKontrol = new MidiBus(this, "SLIDER/KNOB", "CTRL", "nanoKontrol");
-  vdmxKontrol = new MidiBus(this, "From VDMX", "To VDMX", "vdmxKontrol");
+  kontrol = new LazerController(this);
 
 
-  kontrol = new Controller();
-
-
-  s = new Sifon(this, width, height, P2D);
+  s = new LazerSyphon(this, width, height, P2D);
 
 }
 
@@ -43,7 +38,7 @@ void draw() {
   s.begin();
 
   s.g.imageMode(CENTER);
-  
+
   if (kontrol.get("drawEindbaas") > 0) {
     s.g.image(eindbaas, width/2, height/2);
   }
@@ -83,7 +78,7 @@ void draw() {
 
 
 void controllerChange(int channel, int number, int value, long timestamp, String bus_name) {
-  
+
 
   if (bus_name == "nanoKontrol") {
     kontrol.handleMidiEvent(channel, number, value);
@@ -93,7 +88,7 @@ void controllerChange(int channel, int number, int value, long timestamp, String
   if (bus_name == "vdmxKontrol") {
 
   }
-  
+
 }
 
 

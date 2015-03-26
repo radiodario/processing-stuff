@@ -1,29 +1,25 @@
 PShader myShader;
-import themidibus.*;
 
-MidiBus nanoKontrol;
-MidiBus vdmxKontrol;
-Controller kontrol;
-Sifon send;
+import lazer.viz.*;
+
+LazerController kontrol;
+LazerSyphon send;
 
 PImage texture;
 
-int width = 1920;
-int height = 1080;
+int width = 1024;
+int height = 768;
 
 void setup() {
   size(800, 600, P3D);
 
-  MidiBus.list();
-  nanoKontrol = new MidiBus(this, "SLIDER/KNOB", "CTRL", "nanoKontrol");
-  vdmxKontrol = new MidiBus(this, "From VDMX", "To VDMX", "vdmxKontrol");
-
-  kontrol = new Controller();
+  kontrol = new LazerController(this);
+  setControls();
 
   myShader = loadShader("shader.glsl");
   myShader.set("resolution", float(width), float(height));
 
-  send = new Sifon(this, width, height, P3D);
+  send = new LazerSyphon(this, width, height, P3D);
 
   updateShader();
 
@@ -89,30 +85,23 @@ void draw() {
   text("running", 10, 10);
 }
 
-void controllerChange(int channel, int number, int value, long timestamp, String bus_name) {
+void setControls() {
+  kontrol.setMapping("scaleFactor", kontrol.KNOB7, 100);
+  kontrol.setMapping("iterations", kontrol.KNOB8, 4);
+  kontrol.setMapping("pParam", kontrol.SLIDER5, 10);
+  kontrol.setMapping("qParam", kontrol.SLIDER6, 10);
+  kontrol.setMapping("rParam", kontrol.SLIDER7, 10);
+  kontrol.setMapping("SRadius", kontrol.SLIDER8, 10);
+  kontrol.setMapping("segColorR", kontrol.KNOB1, 2);
+  kontrol.setMapping("segColorG", kontrol.KNOB2, 4);
+  kontrol.setMapping("segColorB", kontrol.KNOB3, 9);
+  kontrol.setMapping("bgColorR", kontrol.KNOB4, 100);
+  kontrol.setMapping("bgColorG", kontrol.KNOB5, 120);
+  kontrol.setMapping("bgColorB", kontrol.KNOB6, 130);
+  kontrol.setMapping("hideFrame", kontrol.BUTTON_R5, 1);
 
-  // println(timestamp + " - Handled controllerChange " + channel + " " + number + " " + value + " " + bus_name);
-
-  if (bus_name == "nanoKontrol") {
-    kontrol.handleMidiEvent(channel, number, value);
-  }
-
-  if (bus_name == "vdmxKontrol") {
-
-    // println("Handled " + channel + " " + number + " " + value);
-
-  }
-
+  kontrol.setNoteControl("sRadius", kontrol.VDMX_LOW);
 }
 
 
-void noteOn(int channel, int pad, int velocity, long timestamp, String bus_name) {
-
-  if (channel == 1) {
-    kontrol.setControlValueFromNote("sRadius", pad);
-  }
-
-
-
-}
 

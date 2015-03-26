@@ -56,34 +56,14 @@ class Controller {
 
  void setMappings() {
 
-  setMapping("scaleFactor", KNOB7, 100);
-  setMapping("iterations", KNOB8, 4);
-  setMapping("pParam", SLIDER1, 10);
-  setMapping("qParam", SLIDER2, 10);
-  setMapping("rParam", SLIDER3, 10);
-  setMapping("SRadius", SLIDER4, 10);
 
-  // base R component for sea
-  setMapping("segColorR", KNOB1, 2);
-  // base G component for sea
-  setMapping("segColorG", KNOB2, 4);
-  // base B component for sea
-  setMapping("segColorB", KNOB3, 9);
-
-  // water R
-  setMapping("bgColorR", KNOB4, 100);
-  // water G
-  setMapping("bgColorG", KNOB5, 120);
-  // water B
-  setMapping("bgColorB", KNOB6, 130);
-
-  setMapping("hideFrame", BUTTON_R5, 1);
 
  }
 
  void printMappings() {
    int i = 1;
    pushMatrix();
+  // bas
    pushStyle();
    translate(0, 0);
    fill(0, 0, 0, 80);

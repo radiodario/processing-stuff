@@ -132,53 +132,54 @@ public void setControls() {
   kontrol.setNoteControl("decay", kontrol.VDMX_MID);
 }
 
+
 class Colors {
- 
+
   ColorTheme t;
   ColorList l;
   int colorCounter;
   int numColors;
-  
+
   public Colors(int numColors) {
-    this.numColors = numColors; 
-    
+    this.numColors = numColors;
+
     this.colorCounter = 0;
-    
+
     setRandomBrightColors();
   }
- 
+
   public void setRandomBrightColors() {
     t = new ColorTheme("random");
-    
+
     t.addRange(ColorRange.BRIGHT, TColor.newRandom(), random(0.02f, 0.5f));
     t.addRange(ColorRange.BRIGHT, TColor.newRandom(), random(0.02f, 0.5f));
     t.addRange(ColorRange.BRIGHT, TColor.newRandom(), random(0.02f, 0.5f));
     t.addRange(ColorRange.BRIGHT, TColor.newRandom(), random(0.02f, 0.5f));
     t.addRange(ColorRange.BRIGHT, TColor.newRandom(), random(0.02f, 0.5f));
-    
+
     l = t.getColors(numColors);
-    
-    
+
+
   }
-  
+
   public void setRandomDarkColors() {
     t = new ColorTheme("random");
-    
+
     t.addRange(ColorRange.INTENSE, TColor.newRandom(), random(0.02f, 0.5f));
     t.addRange(ColorRange.INTENSE, TColor.newRandom(), random(0.02f, 0.5f));
     t.addRange(ColorRange.INTENSE, TColor.newRandom(), random(0.02f, 0.5f));
     t.addRange(ColorRange.INTENSE, TColor.newRandom(), random(0.02f, 0.5f));
     t.addRange(ColorRange.INTENSE, TColor.newRandom(), random(0.02f, 0.5f));
-    
+
     l = t.getColors(numColors);
-    
-    
+
+
   }
- 
- 
+
+
   public void setVoidColors() {
     t = new ColorTheme("enter_the_void");
-  
+
     t.addRange(ColorRange.BRIGHT, TColor.newHex("34232a"), 0.5547332f);
     t.addRange(ColorRange.BRIGHT, TColor.newHex("5e3f6b"), 0.12577668f);
     t.addRange(ColorRange.BRIGHT, TColor.newHex("895844"), 0.07337354f);
@@ -242,40 +243,40 @@ class Colors {
     t.addRange(ColorRange.BRIGHT, TColor.newHex("bffff4"), 4.5687135e-5f);
     t.addRange(ColorRange.BRIGHT, TColor.newHex("739f85"), 4.5687135e-5f);
     t.addRange(ColorRange.BRIGHT, TColor.newHex("acbee2"), 4.5687135e-5f);
-   
+
     l = t.getColors(numColors);
 
   }
- 
- 
+
+
   public int getAColor() {
-    
+
      return l.get((int) random(numColors)).toARGB();
-    
-    
+
+
   }
-  
+
   public int getNextColor() {
     return l.get(++colorCounter % numColors).toARGB();
-    
+
   }
-  
+
   public void update() {
     if (kontrol.get("setRandomBrightColors") > 0) {
       colors.setRandomBrightColors();
     }
-    
+
     if (kontrol.get("setRandomDarkColors") > 0) {
       colors.setRandomDarkColors();
     }
-    
-    
+
+
     if (kontrol.get("setVoidColors") > 0) {
       colors.setVoidColors();
-    } 
-    
+    }
+
   }
-  
+
 }
 
 class Cube implements LazerBeatListener {
