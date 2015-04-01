@@ -7,8 +7,8 @@ LazerSyphon send;
 
 PImage texture;
 
-int width = 1024;
-int height = 768;
+int width = 560;
+int height = 560;
 
 void setup() {
   size(800, 600, P3D);
@@ -17,7 +17,7 @@ void setup() {
   setControls();
 
   myShader = loadShader("alice.glsl");
-  
+
   myShader.set("resolution", float(width), float(height));
 
   send = new LazerSyphon(this, width, height, P3D);
@@ -71,7 +71,7 @@ void setControls() {
   // the y coords of the sea of dirac
   kontrol.setMapping("dirac_y", kontrol.SLIDER1, 60);
   kontrol.setMapping("band_size", kontrol.SLIDER2, 60);
-  kontrol.setMapping("speed", kontrol.SLIDER3, 1);  
+  kontrol.setMapping("speed", kontrol.SLIDER3, 1);
 
   kontrol.setMapping("hideFrame", kontrol.BUTTON_R5, 1);
 }

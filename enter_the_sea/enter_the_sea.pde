@@ -7,11 +7,11 @@ LazerSyphon send;
 
 PImage texture;
 
-int width = 1024;
-int height = 768;
+int width = 560;
+int height = 560;
 
 void setup() {
-  size(800, 600, P3D);
+  size(800, 600, P3D); //P3D? Why not OpenGL??? ;_____;
   kontrol = new LazerController(this);
   setControls();
 

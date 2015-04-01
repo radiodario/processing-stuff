@@ -1,7 +1,6 @@
 
 import toxi.color.*;
 import toxi.color.theory.*;
-//import toxi.util.datatypes.*;
 
 import lazer.viz.*;
 
@@ -80,7 +79,6 @@ void setControls() {
   kontrol.setMapping("resetLife",  kontrol.BUTTON_CYCLE);
   kontrol.setMapping("fullLife", kontrol.BUTTON_TRACK_PREV);
   kontrol.setMapping("avoidBeat",  kontrol.BUTTON_TRACK_NEXT);
-  kontrol.setMapping("resetLife",  kontrol.BUTTON_R2);
   kontrol.setMapping("setRandomBrightColors",  kontrol.BUTTON_MARKER_SET, 1);
   kontrol.setMapping("setVoidColors",  kontrol.BUTTON_MARKER_LEFT);
   kontrol.setMapping("setRandomDarkColors",  kontrol.BUTTON_MARKER_RIGHT);
