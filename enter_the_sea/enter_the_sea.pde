@@ -7,8 +7,8 @@ LazerSyphon send;
 
 PImage texture;
 
-int width = 560;
-int height = 560;
+int width = 1280;
+int height = 720;
 
 void setup() {
   size(800, 600, P3D); //P3D? Why not OpenGL??? ;_____;

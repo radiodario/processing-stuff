@@ -7,8 +7,8 @@ LazerSyphon send;
 
 PImage texture;
 
-int width = 800;
-int height = 600;
+int width = 1024;
+int height = 768;
 
 void setup() {
   size(800, 600, P3D);
@@ -16,7 +16,7 @@ void setup() {
   kontrol = new LazerController(this);
   setControls();
 
-  myShader = loadShader("alice.glsl");
+  myShader = loadShader("mandala.glsl");
 
   myShader.set("resolution", float(width), float(height));
 
@@ -27,13 +27,13 @@ void setup() {
 void updateShader() {
   myShader.set("iGlobalTime", millis() / 1000.0);
 
-  float dirac_y = (float) map(kontrol.get("dirac_y"), 0, 127, -2, 10);
-  myShader.set("dirac_y", dirac_y);
+  // float dirac_y = (float) map(kontrol.get("dirac_y"), 0, 127, -2, 10);
+  // myShader.set("dirac_y", dirac_y);
 
-  float band_size = (float) map(kontrol.get("band_size"), 0, 127, 0, 0.5);
-  myShader.set("band_size", band_size);
+  float thickness = (float) map(kontrol.get("thickness"), 0, 127, 0, 1);
+  myShader.set("thickness", thickness);
 
-  float speed = (float) map(kontrol.get("speed"), 0, 127, 0, 1);
+  float speed = (float) map(kontrol.get("speed"), 0, 127, 0, 50);
   myShader.set("speed", speed);
 
 }
@@ -69,9 +69,8 @@ void draw() {
 
 void setControls() {
   // the y coords of the sea of dirac
-  kontrol.setMapping("dirac_y", kontrol.SLIDER1, 60);
-  kontrol.setMapping("band_size", kontrol.SLIDER2, 60);
+  kontrol.setMapping("thickness", kontrol.SLIDER1, 60);
   kontrol.setMapping("speed", kontrol.SLIDER3, 1);
-
+  // kontrol.setMapping("dirac_y", kontrol.SLIDER1, 60);
   kontrol.setMapping("hideFrame", kontrol.BUTTON_R5, 1);
 }
