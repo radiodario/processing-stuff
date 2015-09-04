@@ -4,20 +4,20 @@ import lazer.viz.*;
 
 LazerController kontrol;
 LazerSyphon send;
+PImage textd;
 
-PImage texture;
 
-int width = 1024;
-int height = 768;
+int width = 1920;
+int height = 1080;
 
 void setup() {
   size(800, 600, P3D);
 
   kontrol = new LazerController(this);
   setControls();
-
-  myShader = loadShader("shader.glsl");
-  myShader.set("amount", 0.0023);
+  textd = loadImage("tex11.png");
+  myShader = loadShader("kaleido.glsl");
+  myShader.set("texture", textd);
   myShader.set("resolution", float(width), float(height));
 
   send = new LazerSyphon(this, width, height, P3D);
@@ -26,14 +26,18 @@ void setup() {
 
 void updateShader() {
   myShader.set("iGlobalTime", millis() / 1000.0);
-  float multi = (float) map(kontrol.get("multi"), 0, 127, 0.000001, 0.0025);
 
-  float timeOffset1 = (float) map(kontrol.get("timeOffset1"), 0, 127, 1, 10);
-  float timeOffset2 = (float) map(kontrol.get("timeOffset2"), 0, 127, 1, 10);
-  float timeOffset3 = (float) map(kontrol.get("timeOffset3"), 0, 127, 1, 10);
-  myShader.set("timeOffset1", timeOffset1);
-  myShader.set("timeOffset2", timeOffset2);
-  myShader.set("timeOffset3", timeOffset3);
+  float tau_inverse = (float) map(kontrol.get("tau_inverse"), 0, 127, 1, 10);
+  myShader.set("tau_inverse", tau_inverse);
+
+  float time_mult = (float) map(kontrol.get("time_mult"), 0, 127, 0, 1);
+  myShader.set("time_mult", time_mult);
+
+  float zoom = (float) map(kontrol.get("zoom"), 0, 127, 1, 10);
+  myShader.set("zoom", zoom);
+
+  int iterations = (int) map(kontrol.get("iterations"), 0, 127, 1, 50);
+  myShader.set("iterations", iterations);
 
 }
 
@@ -51,8 +55,6 @@ void draw() {
   // shader.
   send.g.fill(255);
   send.g.rect(0, 0, width, height);
-  send.g.resetShader();
-
   send.end();
   send.send();
 
@@ -67,15 +69,10 @@ void draw() {
 }
 
 void setControls() {
-
-  kontrol.setMapping("timeOffset1", kontrol.SLIDER1, 1);
-  kontrol.setMapping("timeOffset2", kontrol.SLIDER2, 1);
-  kontrol.setMapping("timeOffset3", kontrol.SLIDER3, 1);
-
+  // the y coords of the sea of dirac
+  kontrol.setMapping("tau_inverse", kontrol.SLIDER1, 100);
+  kontrol.setMapping("time_mult", kontrol.SLIDER2, 60);
+  kontrol.setMapping("zoom", kontrol.SLIDER3, 50);
   kontrol.setMapping("hideFrame", kontrol.BUTTON_R5, 1);
-
-  kontrol.setNoteControl("timeOffset1", kontrol.VDMX_LOW);
-  kontrol.setNoteControl("timeOffset2", kontrol.VDMX_MID);
-  kontrol.setNoteControl("timeOffset3", kontrol.VDMX_HIGH);
-
+  kontrol.setMapping("iterations", kontrol.KNOB5, 150);
 }

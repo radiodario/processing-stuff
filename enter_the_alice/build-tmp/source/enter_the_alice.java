@@ -23,10 +23,8 @@ PShader myShader;
 LazerController kontrol;
 LazerSyphon send;
 
-PImage texture;
-
-int width = 800;
-int height = 600;
+int width = 1024;
+int height = 768;
 
 public void setup() {
   size(800, 600, P3D);
@@ -71,7 +69,7 @@ public void draw() {
   send.g.fill(255);
   send.g.rect(0, 0, width, height);
   send.g.resetShader();
-
+  send.g.fill(255, 0, 0);
   send.end();
   send.send();
 

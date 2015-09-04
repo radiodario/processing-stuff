@@ -8,8 +8,8 @@ LazerSyphon send;
 
 Colors colors;
 
-int width = 1920;
-int height = 1080;
+int width = 1024;
+int height = 768;
 
 Noisefield noisefield;
 

@@ -5,8 +5,8 @@ import lazer.viz.*;
 LazerController kontrol;
 LazerSyphon send;
 
-int width = 560;
-int height = 560;
+int width = 1024;
+int height = 768;
 
 PShader myShader;
 
@@ -74,7 +74,7 @@ void updateShader() {
 
   float divisions = (float) map(kontrol.get("divisions"), 0, 127, 1, 20);
   myShader.set("divisions", divisions);
-  float speed = (float) map(kontrol.get("speed"), 0, 127, 0, 100);
+  float speed = (float) map(kontrol.get("speed"), 0, 127, 0, 40);
   myShader.set("speed", speed);
   updateShaderColors();
 }
