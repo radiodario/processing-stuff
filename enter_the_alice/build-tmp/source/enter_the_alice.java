@@ -23,8 +23,8 @@ PShader myShader;
 LazerController kontrol;
 LazerSyphon send;
 
-int width = 1024;
-int height = 768;
+int width = 2000;
+int height = 2000;
 
 public void setup() {
   size(800, 600, P3D);
