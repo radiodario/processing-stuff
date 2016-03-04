@@ -5,8 +5,8 @@ import lazer.viz.*;
 LazerController kontrol;
 LazerSyphon send;
 
-int width = 2000;
-int height = 2000;
+int width = 800;
+int height = 600;
 
 void setup() {
   size(800, 600, P3D);
@@ -33,6 +33,34 @@ void updateShader() {
 
   float speed = (float) map(kontrol.get("speed"), 0, 127, 0, 1);
   myShader.set("speed", speed);
+
+  float speedMult = (float) map(kontrol.get("speedMult"), 0, 127, -1, 1);
+  myShader.set("speedMult", speedMult);
+
+  float mover = (float) map(kontrol.get("mover"), 0, 127, 1, 2000);
+  myShader.set("mover", mover);
+
+  float red = (float) map(kontrol.get("red"), 0, 127, 0.0, 1.0);
+  myShader.set("red", red);
+
+  float green = (float) map(kontrol.get("green"), 0, 127, 0.0, 1.0);
+  myShader.set("green", green);  
+
+  float blue = (float) map(kontrol.get("blue"), 0, 127, 0.0, 1.0);
+  myShader.set("blue", blue);  
+
+  float matX = (float) map(kontrol.get("matX"), 0, 127, -1.0, 1.0);
+  myShader.set("matX", matX);
+
+  float matY = (float) map(kontrol.get("matY"), 0, 127, -1.0, 1.0);
+  myShader.set("matY", matY);
+
+  float matZ = (float) map(kontrol.get("matZ"), 0, 127, -1.0, 1.0);
+  myShader.set("matZ", matZ);
+
+  float matQ = (float) map(kontrol.get("matQ"), 0, 127, -1.0, 1.0);
+  myShader.set("matQ", matQ);
+
 
 }
 
@@ -70,6 +98,17 @@ void setControls() {
   kontrol.setMapping("dirac_y", kontrol.SLIDER1, 60);
   kontrol.setMapping("band_size", kontrol.SLIDER2, 60);
   kontrol.setMapping("speed", kontrol.SLIDER3, 1);
+  kontrol.setMapping("speedMult", kontrol.SLIDER4, 100);
+  kontrol.setMapping("mover", kontrol.SLIDER5, 100);
+
+  kontrol.setMapping("red", kontrol.KNOB1, 127);
+  kontrol.setMapping("green", kontrol.KNOB2, 127);
+  kontrol.setMapping("blue", kontrol.KNOB3, 127);
+
+  kontrol.setMapping("matX", kontrol.KNOB5, 90);
+  kontrol.setMapping("matY", kontrol.KNOB6, 80);
+  kontrol.setMapping("matZ", kontrol.KNOB7, 30);
+  kontrol.setMapping("matQ", kontrol.KNOB8, 90);
 
   kontrol.setMapping("hideFrame", kontrol.BUTTON_R5, 1);
 }

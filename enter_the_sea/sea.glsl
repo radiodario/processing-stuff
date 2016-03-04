@@ -87,6 +87,15 @@ vec3 getSkyColor(vec3 e) {
     return ret;
 }
 
+// vec3 getSkyColor(vec3 e) {
+//     e.y = max(e.y,0.0);
+//     vec3 ret;
+//     ret.x = 0.0;//pow(1.0-e.y,1.0);
+//     ret.y = 0.0;//1.0-e.y;
+//     ret.z = 0.0; //0.0+(0.2-e.y)*0.0;
+//     return ret;
+// }
+
 // sea
 float sea_octave(vec2 uv, float choppy) {
     uv += noise(uv);

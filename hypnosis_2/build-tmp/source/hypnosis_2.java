@@ -25,8 +25,8 @@ LazerSyphon send;
 
 PImage texture;
 
-int width = 2000;
-int height = 2000;
+int width = 800;
+int height = 600;
 
 public void setup() {
   size(800, 600, P3D);

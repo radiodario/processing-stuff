@@ -20,21 +20,34 @@ uniform float     iSampleRate;           // sound sample rate (i.e., 44100)
 uniform float dirac_y;
 uniform float band_size;
 uniform float speed;
+uniform float speedMult;
+
+uniform float matX;
+uniform float matY;
+uniform float matZ;
+uniform float matQ;
+
+uniform float red;
+uniform float green;
+uniform float blue;
+
+
+uniform float mover;
 
 float t=iGlobalTime+80.;
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
   vec2 uv = fragCoord.xy / iResolution.yy;
   uv.y *= dirac_y;
-  uv *= mat2(.4,.3,-.3,.4)*band_size;
+  uv *= mat2(matX,matY,matZ,matQ)*band_size;
 
 
   float z=exp(-uv.y*uv.y*(2000.+1000.*cos(t*0.074+0.36)))*((2.+sin(t*0.035))*0.2)+0.8*cos(uv.y*11.0);
-  uv.x += 0.7*sin(z+t*speed)*0.3;
-  float d=sin(uv.x*1200.)+0.3;
+  uv.x += speedMult*sin(z+t*speed)*0.3;
+  float d=sin(uv.x*mover)+0.3;
   float aa=fwidth(d);
   float c=smoothstep(-aa,aa,d);
-  fragColor = vec4(c,c,c,1.0);
+  fragColor = vec4(red * c, green * c, blue * c,1.0);
 }
 
 void main(void) {

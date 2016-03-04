@@ -25,15 +25,15 @@ LazerSyphon send;
 PImage textd;
 
 
-int width = 2000;
-int height = 2000;
+int width = 1280;
+int height = 720;
 
 public void setup() {
   size(800, 600, P3D);
 
   kontrol = new LazerController(this);
   setControls();
-  textd = loadImage("tex11.png");
+  textd = loadImage("tex15.png");
   myShader = loadShader("kaleido.glsl");
   myShader.set("texture", textd);
   myShader.set("resolution", PApplet.parseFloat(width), PApplet.parseFloat(height));
@@ -43,7 +43,13 @@ public void setup() {
 }
 
 public void updateShader() {
-  myShader.set("iGlobalTime", millis() / 1000.0f);
+
+  float speed = (float) map(kontrol.get("speed"), 0, 127, 0, 1);
+  myShader.set("speed", speed);
+
+
+  //myShader.set("iGlobalTime", millis() / 10000.0);
+  myShader.set("time", millis() / 10000.0f);
 
   float tau_inverse = (float) map(kontrol.get("tau_inverse"), 0, 127, 1, 10);
   myShader.set("tau_inverse", tau_inverse);
@@ -88,9 +94,11 @@ public void draw() {
 
 public void setControls() {
   // the y coords of the sea of dirac
+  kontrol.setMapping("speed", kontrol.KNOB6, 100);
   kontrol.setMapping("tau_inverse", kontrol.SLIDER1, 100);
   kontrol.setMapping("time_mult", kontrol.SLIDER2, 60);
   kontrol.setMapping("zoom", kontrol.SLIDER3, 50);
+  kontrol.setNoteControl("zoom", kontrol.VDMX_LOW);
   kontrol.setMapping("hideFrame", kontrol.BUTTON_R5, 1);
   kontrol.setMapping("iterations", kontrol.KNOB5, 150);
 }

@@ -7,8 +7,8 @@ LazerSyphon send;
 
 PImage texture;
 
-int width = 2000;
-int height = 2000;
+int width = 1280;
+int height = 720;
 
 void setup() {
   size(800, 600, P3D); //P3D? Why not OpenGL??? ;_____;
@@ -120,7 +120,7 @@ void setControls() {
   // water B
   kontrol.setMapping("seaWaterB", kontrol.KNOB6, 130);
   kontrol.setMapping("moveMultX", kontrol.SLIDER5, 0);
-  kontrol.setMapping("moveMultY", kontrol.SLIDER6, 0);
+  kontrol.setMapping("moveMultY", kontrol.SLIDER6, 10);
   kontrol.setMapping("moveMultZ", kontrol.SLIDER7, 0);
   kontrol.setMapping("hideFrame", kontrol.BUTTON_R5, 1);
 

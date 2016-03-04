@@ -25,9 +25,9 @@ LazerSyphon send;
 String textValue = "";
 PFont font;
 
-int width = 1024;
-int height = 768;
-int fontSize = 60;
+int width = 800;
+int height = 600;
+int fontSize = 60;      
 
 ControlP5 cp5;
 
@@ -51,7 +51,7 @@ public void setup() {
    cp5.addSlider("fontSize")
      .setPosition(10,100)
      .setSize(180,20)
-     .setRange(10,120)
+     .setRange(10,200)
      .setNumberOfTickMarks(5)
      ;
 

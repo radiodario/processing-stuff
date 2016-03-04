@@ -25,15 +25,17 @@ uniform float zoom;
 uniform float offset;
 uniform float mult;
 uniform int iterations;
+uniform float speed;
 
 const float tau = 6.2831853;
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-  vec2 uv = (fragCoord.xy-0.5*iResolution.xy) * zoom / iResolution.y;
+    
+  vec2 uv = (fragCoord.xy-0.5*resolution.xy) * zoom / resolution.y;
 
     float r = 1.0;
-    float a = iGlobalTime*.1;
+    float a = iGlobalTime*speed;
     float c = cos(a)*r;
     float s = sin(a)*r;
     for ( int i=0; i<iterations; i++ )
@@ -54,8 +56,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
     // fragColor = 1.0*0.5*iGlobalTime+vec4(13,17,23,1)*texture2D( texture, uv*vec2(1,-1)+.5, -1.0 );
     // fragColor = offset+mult*sin(iGlobalTime+vec4(13,17,23,1)*texture2D( texture, uv*vec2(1,-1)+.5, -1.0 ));
-    // fragColor = offset+mult*sin((iGlobalTime/100.0)+vec4(13,17,23,1)*texture2D( texture, uv*vec2(1,-1)+.5, -1.0 ));
-    fragColor = 0.5+1.0*sin(1.0+vec4(13,17,23,1)*texture2D( texture, uv*vec2(1,-1)+.5, -1.0 ));
+    fragColor = offset+mult*sin((iGlobalTime/100.0)+vec4(13,17,23,1)*texture2D( texture, uv*vec2(1,-1)+.5, -1.0 ));
+
 }
 
 void main(void) {

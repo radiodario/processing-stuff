@@ -25,8 +25,8 @@ public class enter_the_spiral extends PApplet {
 LazerController kontrol;
 LazerSyphon send;
 
-int width = 2000;
-int height = 2000;
+int width = 800;
+int height = 600;
 
 PShader myShader;
 
