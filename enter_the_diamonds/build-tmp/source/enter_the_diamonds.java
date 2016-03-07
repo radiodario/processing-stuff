@@ -44,6 +44,30 @@ public void setup() {
 
 public void updateShader() {
   myShader.set("iGlobalTime", millis() / 2000.0f);
+  float delta = (float) map(kontrol.get("DELTA"), 0, 127, 0.0f, 0.01f);
+  myShader.set("DELTA", delta);
+  int rayCount = (int) map(kontrol.get("RAY_COUNT"), 0, 127, 0, 10);
+  myShader.set("RAY_COUNT", rayCount);
+  float rayLengthMax = (float) map(kontrol.get("RAY_LENGTH_MAX"), 0, 127, 0, 127);
+  myShader.set("RAY_LENGTH_MAX", rayLengthMax);
+  int rayStepMax = (int) map(kontrol.get("RAY_STEP_MAX"), 0, 127, 0, 100);
+  myShader.set("RAY_STEP_MAX", rayStepMax);
+  float refractFactor = (float) map(kontrol.get("REFRACT_FACTOR"), 0, 127, 0, 1);
+  myShader.set("REFRACT_FACTOR", refractFactor);
+  float refractIndex = (float) map(kontrol.get("REFRACT_INDEX"), 0, 127, 0, 3);
+  myShader.set("REFRACT_INDEX", refractIndex);
+  float ambient = (float) map(kontrol.get("AMBIENT"), 0, 127, 0, 1);
+  myShader.set("AMBIENT", ambient);
+  float specularPower = (float) map(kontrol.get("SPECULAR_POWER"), 0, 127, 0, 10);
+  myShader.set("SPECULAR_POWER", specularPower);
+  float specularIntensity = (float) map(kontrol.get("SPECULAR_INTENSITY"), 0, 127, 0, 1);
+  myShader.set("SPECULAR_INTENSITY", specularIntensity);
+  float fadePower = (float) map(kontrol.get("FADE_POWER"), 0, 127, 0, 2);
+  myShader.set("FADE_POWER", fadePower);
+  float glowFactor = (float) map(kontrol.get("GLOW_FACTOR"), 0, 127, 0, 5);
+  myShader.set("GLOW_FACTOR", glowFactor);
+  float luminosityFactor = (float) map(kontrol.get("LUMINOSITY_FACTOR"), 0, 127, 0, 5);
+  myShader.set("LUMINOSITY_FACTOR", luminosityFactor);
 }
 
 
@@ -76,14 +100,24 @@ public void setControls() {
 
   // Kontroller controls
 
-  // the height of the sea
-  kontrol.setMapping("seaHeight", kontrol.SLIDER1, 50);
-  // how choppy is the sea
+kontrol.setMapping("DELTA", kontrol.KNOB1, 1);
+kontrol.setMapping("RAY_COUNT", kontrol.KNOB2, 100);
+kontrol.setMapping("RAY_LENGTH_MAX", kontrol.KNOB3, 100);
+kontrol.setMapping("RAY_STEP_MAX", kontrol.KNOB4, 75);
+kontrol.setMapping("REFRACT_FACTOR", kontrol.SLIDER1, 100);
+kontrol.setMapping("REFRACT_INDEX", kontrol.SLIDER2, 100);
+kontrol.setMapping("AMBIENT", kontrol.SLIDER3, 100);
+kontrol.setMapping("SPECULAR_POWER", kontrol.KNOB8, 100);
+kontrol.setMapping("SPECULAR_INTENSITY", kontrol.KNOB7, 100);
+kontrol.setMapping("FADE_POWER", kontrol.SLIDER4, 100);
+kontrol.setMapping("GLOW_FACTOR", kontrol.SLIDER5, 100);
+kontrol.setMapping("LUMINOSITY_FACTOR", kontrol.KNOB5, 100);
+
   
   kontrol.setMapping("hideFrame", kontrol.BUTTON_R5, 1);
 
   // VDMX note controls
-  kontrol.setNoteControl("seaHeight", kontrol.VDMX_LOW);
+  kontrol.setNoteControl("LUMINOSITY_FACTOR", kontrol.VDMX_LOW);
 }
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "enter_the_diamonds" };

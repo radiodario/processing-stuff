@@ -20,20 +20,21 @@ uniform vec4      iMouse;                // mouse pixel coords. xy: current (if 
 uniform vec4      iDate;                 // (year, month, day, time in seconds)
 uniform float     iSampleRate;           // sound sample rate (i.e., 44100)
 
-#define DELTA       0.001
-#define RAY_COUNT     7
-#define RAY_LENGTH_MAX    75.0
-#define RAY_STEP_MAX    50
-#define LIGHT       vec3 (1.0, 1.0, -1.0)
-#define REFRACT_FACTOR    0.6
-#define REFRACT_INDEX   2.417 // 2.417 for real diamonds... but it would require RAY_COUNT to be increased (because of total internal reflections)
-#define AMBIENT       0.52
-#define SPECULAR_POWER    3.0
-#define SPECULAR_INTENSITY  0.85
-#define FADE_POWER      1.0
+uniform float DELTA; //0.001;
+uniform int RAY_COUNT;  //   7
+uniform float RAY_LENGTH_MAX; //    75.0
+uniform int RAY_STEP_MAX; //    50
+uniform float REFRACT_FACTOR; //    0.6
+uniform float REFRACT_INDEX; //   2.417 // 2.417 for real diamonds... but it would require RAY_COUNT to be increased (because of total internal reflections)
+uniform float AMBIENT; //       0.52
+uniform float SPECULAR_POWER; //    3.0
+uniform float SPECULAR_INTENSITY; //  0.85
+uniform float FADE_POWER; //      1.0
+uniform float GLOW_FACTOR; //     1.5
+uniform float LUMINOSITY_FACTOR; // 2.90
+
+#define LIGHT vec3 (1.0, 1.0, -1.0)
 #define M_PI        3.1415926535897932384626433832795
-#define GLOW_FACTOR     1.5
-#define LUMINOSITY_FACTOR 2.90
 
 //#define ATAN2 // Comment this to use the original atan function
 

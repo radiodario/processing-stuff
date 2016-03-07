@@ -47,7 +47,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     float s = step(1. - p.x + c.x, p.y - c.y);
     float f = m(c);
     float g = m(c + vec2(-1, 0) + s);
-    s /= 14.;
+    s /= 4.;
 
     float mm = m(c-z[1]);
     float gOrF = (g < f ? f * (.75-s) : g * (.5+s));
