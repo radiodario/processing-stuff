@@ -34,7 +34,7 @@ float m(vec2 p)
 {
     //vec4 sample = texture2D(texture, floor(z * p * .1)/64., -32.);
     //float component = (sample.r > .5 ? p.y : p.x);
-    float sample = rand(floor(z*p*.1));
+    float sample = rand(floor(z * p *.01));
     float component = (sample > .5 ? p.y : p.x);
     return step(cos(1.257 * component), .17);
 }
