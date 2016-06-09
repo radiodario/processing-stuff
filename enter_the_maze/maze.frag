@@ -35,7 +35,7 @@ float m(vec2 p)
     //vec4 sample = texture2D(texture, floor(z * p * .1)/64., -32.);
     //float component = (sample.r > .5 ? p.y : p.x);
     //float sample = rand(floor(z * p *.1));
-    float sample = rand(floor(z * p *.1));
+    float sample = rand(floor(p *.1));
     float component = (sample > .5 ? p.y : p.x);
     return step(cos(1.257 * component), .17);
 }
@@ -43,14 +43,15 @@ float m(vec2 p)
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-    vec2 p = (fragCoord.xy / resolution.y * zoom * 0.5 + iGlobalTime * vec2(0.0, -2.58)) * z;
+    vec2 p = (fragCoord.xy / resolution.y * zoom + iGlobalTime * vec2(0., -1.08));
     vec2 c = floor(p);
     float s = step(1. - p.x + c.x, p.y - c.y);
     float f = m(c);
     float g = m(c + vec2(-1, 0) + s);
     s /= 4.;
 
-    float mm = m(c-z[1]);
+    //float mm = m(c-z[1]);
+    float mm = m(c);
     float gOrF = (g < f ? f * (.75-s) : g * (.5+s));
     
     fragColor.rgb = mix(baseColor, vec3(1), mm + gOrF);

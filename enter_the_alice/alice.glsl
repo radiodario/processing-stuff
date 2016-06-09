@@ -47,6 +47,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
   float d=sin(uv.x*mover)+0.3;
   float aa=fwidth(d);
   float c=smoothstep(-aa,aa,d);
+  
   fragColor = vec4(red * c, green * c, blue * c,1.0);
 }
 

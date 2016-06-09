@@ -25,8 +25,8 @@ LazerSyphon send;
 PImage textd;
 
 
-int width = 1280;
-int height = 720;
+int width = 1920;
+int height = 1080;
 
 public void setup() {
   size(800, 600, P3D);
@@ -34,7 +34,7 @@ public void setup() {
   kontrol = new LazerController(this);
   setControls();
   textd = loadImage("tex15.png");
-  myShader = loadShader("kaleido.glsl");
+  myShader = loadShader("kaleido 2.glsl");
   myShader.set("texture", textd);
   myShader.set("resolution", PApplet.parseFloat(width), PApplet.parseFloat(height));
 

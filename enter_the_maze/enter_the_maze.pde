@@ -7,8 +7,8 @@ LazerSyphon send;
 PImage textd;
 
 
-int width = 1280;
-int height = 720;
+int width = 1920;
+int height = 1080;
 
 void setup() {
   size(800, 600, P3D);
@@ -31,7 +31,7 @@ void updateShader() {
 
   mazeShader.set("iGlobalTime", millis() / 1000.0);
 
-  float zoom = (float) map(kontrol.get("zoom"), 0, 127, 1, 100);
+  float zoom = (float) map(kontrol.get("zoom"), 0, 127, 1, 1000);
   mazeShader.set("zoom", zoom);
 
   float red = (float) map(kontrol.get("red"), 0, 127, 0, 1);
@@ -67,7 +67,7 @@ void draw() {
 void setControls() {
 
   kontrol.setMapping("zoom", kontrol.SLIDER3, 50);
-  kontrol.setNoteControl("zoom", kontrol.VDMX_LOW);
+  //kontrol.setNoteControl("zoom", kontrol.VDMX_LOW);
   // base R component for sea
   kontrol.setMapping("red", kontrol.KNOB1, 2);
   // base G component for sea

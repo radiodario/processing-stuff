@@ -6,7 +6,7 @@ class Piscina implements LazerBeatListener {
 
   int dotSize = 100;
 
-  int numberOfPoints = 200;
+  int numberOfPoints = 1000;
 
   void Piscina() {
 

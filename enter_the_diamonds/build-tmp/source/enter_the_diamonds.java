@@ -25,8 +25,8 @@ LazerSyphon send;
 
 PImage texture;
 
-int width = 1280;
-int height = 720;
+int width = 800;
+int height = 600;
 
 public void setup() {
   size(800, 600, P3D); //P3D? Why not OpenGL??? ;_____;
@@ -99,21 +99,18 @@ public void draw() {
 public void setControls() {
 
   // Kontroller controls
-
-kontrol.setMapping("DELTA", kontrol.KNOB1, 1);
-kontrol.setMapping("RAY_COUNT", kontrol.KNOB2, 100);
-kontrol.setMapping("RAY_LENGTH_MAX", kontrol.KNOB3, 100);
-kontrol.setMapping("RAY_STEP_MAX", kontrol.KNOB4, 75);
-kontrol.setMapping("REFRACT_FACTOR", kontrol.SLIDER1, 100);
-kontrol.setMapping("REFRACT_INDEX", kontrol.SLIDER2, 100);
-kontrol.setMapping("AMBIENT", kontrol.SLIDER3, 100);
-kontrol.setMapping("SPECULAR_POWER", kontrol.KNOB8, 100);
-kontrol.setMapping("SPECULAR_INTENSITY", kontrol.KNOB7, 100);
-kontrol.setMapping("FADE_POWER", kontrol.SLIDER4, 100);
-kontrol.setMapping("GLOW_FACTOR", kontrol.SLIDER5, 100);
-kontrol.setMapping("LUMINOSITY_FACTOR", kontrol.KNOB5, 100);
-
-  
+  kontrol.setMapping("DELTA", kontrol.KNOB1, 1);
+  kontrol.setMapping("RAY_COUNT", kontrol.KNOB2, 100);
+  kontrol.setMapping("RAY_LENGTH_MAX", kontrol.KNOB3, 100);
+  kontrol.setMapping("RAY_STEP_MAX", kontrol.KNOB4, 75);
+  kontrol.setMapping("REFRACT_FACTOR", kontrol.SLIDER1, 100);
+  kontrol.setMapping("REFRACT_INDEX", kontrol.SLIDER2, 100);
+  kontrol.setMapping("AMBIENT", kontrol.SLIDER3, 100);
+  kontrol.setMapping("SPECULAR_POWER", kontrol.KNOB8, 100);
+  kontrol.setMapping("SPECULAR_INTENSITY", kontrol.KNOB7, 100);
+  kontrol.setMapping("FADE_POWER", kontrol.SLIDER4, 100);
+  kontrol.setMapping("GLOW_FACTOR", kontrol.SLIDER5, 100);
+  kontrol.setMapping("LUMINOSITY_FACTOR", kontrol.KNOB5, 100);
   kontrol.setMapping("hideFrame", kontrol.BUTTON_R5, 1);
 
   // VDMX note controls
