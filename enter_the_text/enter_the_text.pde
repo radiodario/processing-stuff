@@ -3,8 +3,9 @@ import controlP5.*;
 
 LazerSyphon send;
 
-String textValue = "";
+String textString = "";
 PFont font;
+CheckBox liveText;
 
 int width = 800;
 int height = 600;
@@ -18,7 +19,7 @@ void setup() {
   send = new LazerSyphon(this, width, height, P3D);
   cp5 = new ControlP5(this);
 
-  font = createFont("impact",80);
+  font = createFont("Futura Book",80);
 
   cp5 = new ControlP5(this);
 
@@ -29,7 +30,7 @@ void setup() {
      .setAutoClear(false)
      ;
 
-   cp5.addSlider("fontSize")
+  cp5.addSlider("fontSize")
      .setPosition(10,100)
      .setSize(180,20)
      .setRange(10,200)
@@ -47,11 +48,17 @@ void setup() {
      .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
      ;
 
-
+  liveText = cp5.addCheckBox("liveTextToggle")
+    .setPosition(10, 180)
+    .setSize(20, 20)
+    .addItem("liveText", 0)
+    ;
 
 }
 
 void draw() {
+
+
 
   send.begin();
   send.g.background(0);
@@ -59,7 +66,7 @@ void draw() {
   send.g.textSize(fontSize);
   send.g.textAlign(CENTER, CENTER);
   // send.g.fill(255);
-  send.g.text(textValue, width/2, height/2);
+  send.g.text(textString, 10, 10, width - 10, height -10);
   send.end();
   send.send();
 
@@ -73,4 +80,27 @@ void draw() {
 
 public void clear() {
   cp5.get(Textfield.class,"textValue").clear();
+}
+
+
+public void textValue(String theText) {
+  // receiving text from controller textinput
+  println("a textfield event for controller 'textinput': "+theText);
+  textString = theText;
+}
+
+void keyPressed(){
+  if ((int)liveText.getArrayValue()[0] < 1) {
+    return;
+  }
+  if (keyCode == SHIFT) {
+    return;
+  }
+  if (keyCode != BACKSPACE) { // make sure you're not trying to delete text,
+    textString += key;
+
+  }else{ // if it turns out that you were trying to delete a character,
+    if (textString.length() < 1) return;
+    textString = textString.substring(0, textString.length() - 1);  
+  }
 }

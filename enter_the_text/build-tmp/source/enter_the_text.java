@@ -22,8 +22,9 @@ public class enter_the_text extends PApplet {
 
 LazerSyphon send;
 
-String textValue = "";
+String textString = "";
 PFont font;
+CheckBox liveText;
 
 int width = 800;
 int height = 600;
@@ -37,7 +38,7 @@ public void setup() {
   send = new LazerSyphon(this, width, height, P3D);
   cp5 = new ControlP5(this);
 
-  font = createFont("impact",80);
+  font = createFont("Futura Book",80);
 
   cp5 = new ControlP5(this);
 
@@ -48,7 +49,7 @@ public void setup() {
      .setAutoClear(false)
      ;
 
-   cp5.addSlider("fontSize")
+  cp5.addSlider("fontSize")
      .setPosition(10,100)
      .setSize(180,20)
      .setRange(10,200)
@@ -66,11 +67,17 @@ public void setup() {
      .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
      ;
 
-
+  liveText = cp5.addCheckBox("liveTextToggle")
+    .setPosition(10, 180)
+    .setSize(20, 20)
+    .addItem("liveText", 0)
+    ;
 
 }
 
 public void draw() {
+
+
 
   send.begin();
   send.g.background(0);
@@ -78,7 +85,7 @@ public void draw() {
   send.g.textSize(fontSize);
   send.g.textAlign(CENTER, CENTER);
   // send.g.fill(255);
-  send.g.text(textValue, width/2, height/2);
+  send.g.text(textString, 10, 10, width - 10, height -10);
   send.end();
   send.send();
 
@@ -92,6 +99,29 @@ public void draw() {
 
 public void clear() {
   cp5.get(Textfield.class,"textValue").clear();
+}
+
+
+public void textValue(String theText) {
+  // receiving text from controller textinput
+  println("a textfield event for controller 'textinput': "+theText);
+  textString = theText;
+}
+
+public void keyPressed(){
+  if ((int)liveText.getArrayValue()[0] < 1) {
+    return;
+  }
+  if (keyCode == SHIFT) {
+    return;
+  }
+  if (keyCode != BACKSPACE) { // make sure you're not trying to delete text,
+    textString += key;
+
+  }else{ // if it turns out that you were trying to delete a character,
+    if (textString.length() < 1) return;
+    textString = textString.substring(0, textString.length() - 1);  
+  }
 }
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "enter_the_text" };
