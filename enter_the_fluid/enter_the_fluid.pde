@@ -12,8 +12,8 @@ PImage sb;
 
 PGraphics systemBuffer;
 
-int width = 1280;
-int height = 1024;
+int width = 800;
+int height = 600;
 int bw = width;
 int bh = height;
 

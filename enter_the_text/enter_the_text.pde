@@ -7,8 +7,8 @@ String textString = "";
 PFont font;
 CheckBox liveText;
 
-int width = 800;
-int height = 600;
+int width = 1280;
+int height = 800;
 int fontSize = 60;      
 
 ControlP5 cp5;
@@ -19,7 +19,7 @@ void setup() {
   send = new LazerSyphon(this, width, height, P3D);
   cp5 = new ControlP5(this);
 
-  font = createFont("Futura Book",80);
+  font = createFont("FuturaStd-HeavyOblique",80);
 
   cp5 = new ControlP5(this);
 
@@ -33,8 +33,8 @@ void setup() {
   cp5.addSlider("fontSize")
      .setPosition(10,100)
      .setSize(180,20)
-     .setRange(10,200)
-     .setNumberOfTickMarks(5)
+     .setRange(10,300)
+     .setNumberOfTickMarks(25)
      ;
 
   cp5.getController("fontSize")

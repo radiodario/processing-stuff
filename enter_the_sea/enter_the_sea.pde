@@ -7,8 +7,8 @@ LazerSyphon send;
 
 PImage texture;
 
-int width = 640;
-int height = 480;
+int width = 800;
+int height = 600;
 
 
 // int width = (int) (3508 / 4);
