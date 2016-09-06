@@ -25,8 +25,8 @@ LazerSyphon send;
 PImage textd;
 
 
-int width = 1280;
-int height = 800;
+int width = 1024;
+int height = 768;
 
 public void setup() {
   size(800, 600, P3D);

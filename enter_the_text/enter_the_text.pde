@@ -7,8 +7,8 @@ String textString = "";
 PFont font;
 CheckBox liveText;
 
-int width = 1280;
-int height = 800;
+int width = 1024;
+int height = 768;
 int fontSize = 60;      
 
 ControlP5 cp5;

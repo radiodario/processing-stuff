@@ -11,8 +11,8 @@ int SPREAD=64;
 int CX,CY;
 float SPEED=5;
 
-int width = 800;
-int height = 480;
+int width = 1024;
+int height = 768;
 
 PImage windows;
 PImage winSprite;

@@ -29,8 +29,8 @@ Colors colors;
 LazerController kontrol;
 LazerSyphon s;
 
-int width = 800;
-int height = 600;
+int width = 1024;
+int height = 768;
 
 public void setup() {
   size(800, 600, P2D);

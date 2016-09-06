@@ -43,7 +43,7 @@ float m(vec2 p)
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-    vec2 p = (fragCoord.xy / resolution.y * zoom * 0.5 + iGlobalTime * vec2(0.0, -2.58)) ;//* z;
+    vec2 p = (fragCoord.xy / resolution.y * zoom * 0.5 + iGlobalTime * vec2(-1.1, -2.58)) * z;
     vec2 c = floor(p);
     float s = step(1. - p.x + c.x, p.y - c.y);
     float f = m(c);
